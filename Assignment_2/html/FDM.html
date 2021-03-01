@@ -1,0 +1,2836 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Assignment-2 Finite Difference Method</title><meta name="generator" content="MATLAB 9.2"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2021-02-28"><meta name="DC.source" content="FDM.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>Assignment-2 Finite Difference Method</h1><!--introduction--><p>Steven Cramp 101030294</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Introduction</a></li><li><a href="#2">Part 1 A</a></li><li><a href="#3">Part 1B</a></li><li><a href="#6">Part 2A</a></li><li><a href="#11">Part 2B</a></li><li><a href="#12">Part 2C</a></li><li><a href="#13">Part 2D</a></li><li><a href="#14">Conclution</a></li></ul></div><h2 id="1">Introduction</h2><p>The purpouse of this lab is to analyse the current and voltage through a semiconductor using the finite diffrence method. This lab will look at the effect that diffrences between finite diffrence method and the analitical soulitions for the voltage in the semiconductor. It will also look at the effects that mesh size, obstacle size and conductivity of the obsticals has on the current through the semiconductor.</p><h2 id="2">Part 1 A</h2><p>This section looks at the solution for the case where a voltage is applied to one side of the semiconductor, while the other side is grounded, and the top and bottom are left free. The figure below shows the voltage at each point in the mesh relitive to ground for the test case. It can be seen that the voltage fallows a line with a negitive slope. This is because the top and bottom are not held at a value and are allowed to converge to a voltage. The voltage that they converge to is the diffrence between the voltages divided by the length of the semiconducter times the distance along the semiconductor plus the applied voltage. This comes from Gauss's law.</p><pre class="codeinput">clear
+clc
+close <span class="string">all</span>
+
+dx =1;
+dy=1;
+nx = 78;
+ny = 52;
+V = zeros(ny,nx);
+G = sparse(nx*ny,nx*ny);
+V0=1;
+BC= [1, nan, 0,nan];
+B = zeros(1,nx*ny);
+<span class="keyword">for</span> p = 1:size(B,2)
+
+    <span class="keyword">if</span> (p== 1)
+        <span class="keyword">if</span> isnan(BC(1))
+
+        <span class="keyword">else</span>
+            B(p)=BC(1);
+        <span class="keyword">end</span>
+    <span class="keyword">elseif</span> (p == nx)
+        <span class="keyword">if</span> isnan(BC(3))
+
+        <span class="keyword">else</span>
+            B(p)=BC(3);
+        <span class="keyword">end</span>
+    <span class="keyword">elseif</span> (p == (1+(ny-1)*nx))
+        <span class="keyword">if</span> isnan(BC(1))
+
+        <span class="keyword">else</span>
+            B(p)=BC(1);
+        <span class="keyword">end</span>
+    <span class="keyword">elseif</span>(p == nx*ny)
+        <span class="keyword">if</span> isnan(BC(3))
+
+        <span class="keyword">else</span>
+            B(p)=BC(3);
+        <span class="keyword">end</span>
+    <span class="keyword">elseif</span>(mod(p,nx)==0)
+        <span class="keyword">if</span> isnan(BC(3))
+
+        <span class="keyword">else</span>
+            B(p)=BC(3);
+        <span class="keyword">end</span>
+    <span class="keyword">elseif</span>(mod(p-1,nx)==0)
+        <span class="keyword">if</span> isnan(BC(1))
+
+        <span class="keyword">else</span>
+            B(p) = BC(1);
+        <span class="keyword">end</span>
+    <span class="keyword">elseif</span>(1&lt;p&amp;p&lt;nx)
+        <span class="keyword">if</span> isnan(BC(4))
+
+        <span class="keyword">else</span>
+            B(p) =BC(4);
+        <span class="keyword">end</span>
+    <span class="keyword">elseif</span>((1+(ny-1)*nx)&lt;p&amp;p&lt;nx*ny)
+        <span class="keyword">if</span> isnan(BC(2))
+
+        <span class="keyword">else</span>
+            B(p) =BC(2);
+        <span class="keyword">end</span>
+    <span class="keyword">else</span>
+
+    <span class="keyword">end</span>
+
+<span class="keyword">end</span>
+
+<span class="keyword">for</span> p = 1:ny
+    <span class="keyword">for</span> m = 1:nx
+        n = m+(p-1)*nx;
+        nxm = (m-1)+(p-1)*nx;
+        nxp = (m+1)+(p-1)*nx;
+        nym = (m)+(p-2)*nx;
+        nyp = m+(p)*nx;
+        nxm2 = (m-2)+(p-1)*nx;
+        nxp2=(m+2)+(p-1)*nx;
+        nym2 = (m)+(p-3)*nx;
+        nyp2 = m+(p+1)*nx;
+        nxp3 = (m+3)+(p-1)*nx;
+        nxm3 = (m-3)+(p-1)*nx;
+
+        <span class="keyword">if</span> (n == 1)
+            <span class="keyword">if</span> (isnan(BC(1)))
+                G(n,n)=-3/(2*dy)+2/(dx^3);
+                G(n,nyp) =4/(2*dy);
+                G(n,nyp2) =1/(2*dy);
+                G(n,nxp)=-5/(dx^3);
+                G(n,nxp2) =4/(dx^3);
+                G(n,nxp3) =-1/(dx^3);
+            <span class="keyword">else</span>
+                G(n,n)=1;
+
+            <span class="keyword">end</span>
+        <span class="keyword">elseif</span> (n == nx)
+            <span class="keyword">if</span> (isnan(BC(3)))
+                G(n,n)=3/(2*dx)+2/(dx^3);
+                G(n,nym) =-4/(2*dx);
+                G(n,nym2) =1/(2*dx);
+                G(n,nxm)=-5/(dx^3);
+                G(n,nxm2) =4/(dx^3);
+                G(n,nxm3) =-1/(dx^3);
+            <span class="keyword">else</span>
+                G(n,n)=1;
+
+            <span class="keyword">end</span>
+        <span class="keyword">elseif</span>(n == (1+(ny-1)*nx))
+            <span class="keyword">if</span> (isnan(BC(1)))
+                G(n,n)=3/(2*dy)+2/(dx^3);
+                G(n,nyp) =-4/(2*dy);
+                G(n,nyp2) =1/(2*dy);
+                G(n,nxp)=-5/(dx^3);
+                G(n,nxp2) =4/(dx^3);
+                G(n,nxp3) =-1/(dx^3);
+            <span class="keyword">else</span>
+                G(n,n)=1;
+
+            <span class="keyword">end</span>
+        <span class="keyword">elseif</span>(n == nx*ny)
+            <span class="keyword">if</span> (isnan(BC(3)))
+                G(n,n)=3/(2*dy)+2/(dx^3);
+                G(n,nyp) =-4/(2*dy);
+                G(n,nyp2) =1/(2*dy);
+                G(n,nxm)=-5/(dx^3);
+                G(n,nxm2) =4/(dx^3);
+                G(n,nxm3) =-1/(dx^3);
+            <span class="keyword">else</span>
+                G(n,n)=1;
+
+            <span class="keyword">end</span>
+        <span class="keyword">elseif</span>(mod(n,nx)==0)
+            <span class="keyword">if</span> (isnan(BC(3)))
+                G(n,n)=2/(dx^3);
+                G(n,nym) =1/(2*dy);
+                G(n,nyp) =1/(2*dy);
+                G(n,nxm)=-5/(dx^3);
+                G(n,nxm2) =4/(dx^3);
+                G(n,nxm3) =-1/(dx^3);
+            <span class="keyword">else</span>
+                G(n,n)=1;
+
+            <span class="keyword">end</span>
+        <span class="keyword">elseif</span>(mod(n-1,nx)==0)
+            <span class="keyword">if</span> (isnan(BC(1)))
+                G(n,n)=2/(dx^3);
+                G(n,nym) =1/(2*dy);
+                G(n,nyp) =1/(2*dy);
+                G(n,nxp)=-5/(dx^3);
+                G(n,nxp2) =4/(dx^3);
+                G(n,nxp3) =-1/(dx^3);
+            <span class="keyword">else</span>
+                G(n,n)=1;
+
+            <span class="keyword">end</span>
+        <span class="keyword">elseif</span> (1&lt;n&amp;n&lt;nx)
+            <span class="keyword">if</span> (isnan(BC(4)))
+                G(n,n)=-3/(2*dy)-2/(dx^2);
+                G(n,nyp) =4/(2*dy);
+                G(n,nyp2) =-1/(2*dy);
+                G(n,nxp) = 1/(dx^2);
+                G(n,nxm) = 1/(dx^2);
+            <span class="keyword">else</span>
+                G(n,n)=1;
+
+            <span class="keyword">end</span>
+        <span class="keyword">elseif</span> ((1+(ny-1)*nx)&lt;n&amp;n&lt;nx*ny)
+            <span class="keyword">if</span> (isnan(BC(2)))
+                G(n,n)=3/(2*dy)-2/(dx^2);
+
+                G(n,nym)=-4/(2*dy);
+                G(n,nym2) =1/(2*dy);
+                G(n,nxp) = 1/(dx^2);
+                G(n,nxm) = 1/(dx^2);
+            <span class="keyword">else</span>
+                G(n,n)=1;
+
+            <span class="keyword">end</span>
+        <span class="keyword">else</span>
+
+            G(n,n)=-4/(dx^2);
+            G(n,nxp) = 1/(dx^2);
+            G(n,nxm) = 1/(dx^2);
+            G(n,nym) = 1/(dx^2);
+            G(n,nyp) = 1/(dx^2);
+
+        <span class="keyword">end</span>
+
+
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+<span class="comment">%figure('name', 'Matrix')</span>
+<span class="comment">%spy(G)</span>
+
+V= G\B';
+<span class="keyword">for</span> p = 1:ny
+    <span class="keyword">for</span> m = 1:nx
+        n = m+(p-1)*nx;
+        Vout(p,m) =V(n);
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+figure
+surf(Vout)
+xlim([1 80])
+xlabel(<span class="string">'X'</span>)
+ylabel(<span class="string">'Y'</span>)
+zlabel(<span class="string">'V'</span>)
+view(0, 0)
+</pre><img vspace="5" hspace="5" src="FDM_01.png" alt=""> <h2 id="3">Part 1B</h2><p>This section looks at the diffrence between the numarical and analytical solution for the case where a voltage is applied across the sides of the semiconductor and the top and bottom are held at zero. The plot below shows the result for the numarical solution for the problem it can be seen from this that the boundry conditions are clearly difined. This is because the boundry voltages are well difined by the boundry conditions. The code sagment below was used to generate the surface seen if the figure below.</p><pre class="codeinput">clear
+dx =1;
+dy=1;
+nx = 78;
+ny = 52;
+V = zeros(ny,nx);
+G = sparse(nx*ny,nx*ny);
+V0=1;
+BC= [1, 0, 1,0];
+B = zeros(1,nx*ny);
+<span class="keyword">for</span> p = 1:size(B,2)
+
+    <span class="keyword">if</span> (p== 1)
+        <span class="keyword">if</span> isnan(BC(1))
+
+        <span class="keyword">else</span>
+            B(p)=BC(1);
+        <span class="keyword">end</span>
+    <span class="keyword">elseif</span> (p == nx)
+        <span class="keyword">if</span> isnan(BC(3))
+
+        <span class="keyword">else</span>
+            B(p)=BC(3);
+        <span class="keyword">end</span>
+    <span class="keyword">elseif</span> (p == (1+(ny-1)*nx))
+        <span class="keyword">if</span> isnan(BC(1))
+
+        <span class="keyword">else</span>
+            B(p)=BC(1);
+        <span class="keyword">end</span>
+    <span class="keyword">elseif</span>(p == nx*ny)
+        <span class="keyword">if</span> isnan(BC(3))
+
+        <span class="keyword">else</span>
+            B(p)=BC(3);
+        <span class="keyword">end</span>
+    <span class="keyword">elseif</span>(mod(p,nx)==0)
+        <span class="keyword">if</span> isnan(BC(3))
+
+        <span class="keyword">else</span>
+            B(p)=BC(3);
+        <span class="keyword">end</span>
+    <span class="keyword">elseif</span>(mod(p-1,nx)==0)
+        <span class="keyword">if</span> isnan(BC(1))
+
+        <span class="keyword">else</span>
+            B(p) = BC(1);
+        <span class="keyword">end</span>
+    <span class="keyword">elseif</span>(1&lt;p&amp;p&lt;nx)
+        <span class="keyword">if</span> isnan(BC(4))
+
+        <span class="keyword">else</span>
+            B(p) =BC(4);
+        <span class="keyword">end</span>
+    <span class="keyword">elseif</span>((1+(ny-1)*nx)&lt;p&amp;p&lt;nx*ny)
+        <span class="keyword">if</span> isnan(BC(2))
+
+        <span class="keyword">else</span>
+            B(p) =BC(2);
+        <span class="keyword">end</span>
+    <span class="keyword">else</span>
+
+    <span class="keyword">end</span>
+
+<span class="keyword">end</span>
+
+<span class="keyword">for</span> p = 1:ny
+    <span class="keyword">for</span> m = 1:nx
+        n = m+(p-1)*nx;
+        nxm = (m-1)+(p-1)*nx;
+        nxp = (m+1)+(p-1)*nx;
+        nym = (m)+(p-2)*nx;
+        nyp = m+(p)*nx;
+        nxm2 = (m-2)+(p-1)*nx;
+        nxp2=(m+2)+(p-1)*nx;
+        nym2 = (m)+(p-3)*nx;
+        nyp2 = m+(p+1)*nx;
+        nxp3 = (m+3)+(p-1)*nx;
+        nxm3 = (m-3)+(p-1)*nx;
+
+        <span class="keyword">if</span> (n == 1)
+            <span class="keyword">if</span> (isnan(BC(1)))
+                G(n,n)=-3/(2*dy)+2/(dx^3);
+                G(n,nyp) =4/(2*dy);
+                G(n,nyp2) =1/(2*dy);
+                G(n,nxp)=-5/(dx^3);
+                G(n,nxp2) =4/(dx^3);
+                G(n,nxp3) =-1/(dx^3);
+            <span class="keyword">else</span>
+                G(n,n)=1;
+
+            <span class="keyword">end</span>
+        <span class="keyword">elseif</span> (n == nx)
+            <span class="keyword">if</span> (isnan(BC(3)))
+                G(n,n)=3/(2*dx)+2/(dx^3);
+                G(n,nym) =-4/(2*dx);
+                G(n,nym2) =1/(2*dx);
+                G(n,nxm)=-5/(dx^3);
+                G(n,nxm2) =4/(dx^3);
+                G(n,nxm3) =-1/(dx^3);
+            <span class="keyword">else</span>
+                G(n,n)=1;
+
+            <span class="keyword">end</span>
+        <span class="keyword">elseif</span>(n == (1+(ny-1)*nx))
+            <span class="keyword">if</span> (isnan(BC(1)))
+                G(n,n)=3/(2*dy)+2/(dx^3);
+                G(n,nyp) =-4/(2*dy);
+                G(n,nyp2) =1/(2*dy);
+                G(n,nxp)=-5/(dx^3);
+                G(n,nxp2) =4/(dx^3);
+                G(n,nxp3) =-1/(dx^3);
+            <span class="keyword">else</span>
+                G(n,n)=1;
+
+            <span class="keyword">end</span>
+        <span class="keyword">elseif</span>(n == nx*ny)
+            <span class="keyword">if</span> (isnan(BC(3)))
+                G(n,n)=3/(2*dy)+2/(dx^3);
+                G(n,nyp) =-4/(2*dy);
+                G(n,nyp2) =1/(2*dy);
+                G(n,nxm)=-5/(dx^3);
+                G(n,nxm2) =4/(dx^3);
+                G(n,nxm3) =-1/(dx^3);
+            <span class="keyword">else</span>
+                G(n,n)=1;
+
+            <span class="keyword">end</span>
+        <span class="keyword">elseif</span>(mod(n,nx)==0)
+            <span class="keyword">if</span> (isnan(BC(3)))
+                G(n,n)=2/(dx^3);
+                G(n,nym) =1/(2*dy);
+                G(n,nyp) =1/(2*dy);
+                G(n,nxm)=-5/(dx^3);
+                G(n,nxm2) =4/(dx^3);
+                G(n,nxm3) =-1/(dx^3);
+            <span class="keyword">else</span>
+                G(n,n)=1;
+
+            <span class="keyword">end</span>
+        <span class="keyword">elseif</span>(mod(n-1,nx)==0)
+            <span class="keyword">if</span> (isnan(BC(1)))
+                G(n,n)=2/(dx^3);
+                G(n,nym) =1/(2*dy);
+                G(n,nyp) =1/(2*dy);
+                G(n,nxp)=-5/(dx^3);
+                G(n,nxp2) =4/(dx^3);
+                G(n,nxp3) =-1/(dx^3);
+            <span class="keyword">else</span>
+                G(n,n)=1;
+
+            <span class="keyword">end</span>
+        <span class="keyword">elseif</span> (1&lt;n&amp;n&lt;nx)
+            <span class="keyword">if</span> (isnan(BC(4)))
+                G(n,n)=-3/(2*dy)-2/(dx^2);
+                G(n,nyp) =4/(2*dy);
+                G(n,nyp2) =-1/(2*dy);
+                G(n,nxp) = 1/(dx^2);
+                G(n,nxm) = 1/(dx^2);
+            <span class="keyword">else</span>
+                G(n,n)=1;
+
+            <span class="keyword">end</span>
+        <span class="keyword">elseif</span> ((1+(ny-1)*nx)&lt;n&amp;n&lt;nx*ny)
+            <span class="keyword">if</span> (isnan(BC(2)))
+                G(n,n)=3/(2*dy)-2/(dx^2);
+
+                G(n,nym)=-4/(2*dy);
+                G(n,nym2) =1/(2*dy);
+                G(n,nxp) = 1/(dx^2);
+                G(n,nxm) = 1/(dx^2);
+            <span class="keyword">else</span>
+                G(n,n)=1;
+
+            <span class="keyword">end</span>
+        <span class="keyword">else</span>
+
+            G(n,n)=-4/(dx^2);
+            G(n,nxp) = 1/(dx^2);
+            G(n,nxm) = 1/(dx^2);
+            G(n,nym) = 1/(dx^2);
+            G(n,nyp) = 1/(dx^2);
+
+        <span class="keyword">end</span>
+
+
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+<span class="comment">%figure('name', 'Matrix')</span>
+<span class="comment">%spy(G)</span>
+
+V= G\B';
+<span class="keyword">for</span> p = 1:ny
+    <span class="keyword">for</span> m = 1:nx
+        n = m+(p-1)*nx;
+        Vout(p,m) =V(n);
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+figure
+surf(Vout)
+xlabel(<span class="string">'X'</span>)
+ylabel(<span class="string">'Y'</span>)
+zlabel(<span class="string">'V'</span>)
+
+
+x = 0:1:nx-1;
+y = 0:1:(ny-1);
+[X,Y]= meshgrid(x,y);
+V2 = zeros (size(X));
+</pre><img vspace="5" hspace="5" src="FDM_02.png" alt=""> <p>The plot below was generated using the fallowing code. It can bee seen from the plot that the value of the voltage at the side of the semiconductor does not converge to a sigular value. Instead it ocilates about the applied voltage. This is due to the finite approxamation of used to generate the solution. Incrasing the number of approxamations will result in the boudries being more well difined.</p><pre class="codeinput"><span class="keyword">for</span> u = 1:2:160
+
+    A= ((cosh(u*pi.*(X-(nx-1)/2)./(ny-1)))./((cosh(u*pi*((nx-1)/2)/(ny-1)))));
+    C=sin((u*pi.*Y)./(ny-1));
+    V2 = V2+ (1/u)*A.*C;
+
+
+<span class="keyword">end</span>
+V2 =V2*(4*1/pi);
+figure
+surf(X,Y,V2)
+xlabel(<span class="string">'X'</span>)
+ylabel(<span class="string">'Y'</span>)
+zlabel(<span class="string">'V'</span>)
+</pre><img vspace="5" hspace="5" src="FDM_03.png" alt=""> <p>The plot below shows the diffrence between the numarical and analytical solutions for the problem. From this figure it can be seen that the largest diffrence appeirs at the corners of the semiconductors. This is because the coners of the semiconductor require more approximations to generate the correct answer.</p><pre class="codeinput">diff =V2-Vout;
+figure
+surf(diff)
+xlabel(<span class="string">'X'</span>)
+ylabel(<span class="string">'Y'</span>)
+zlabel(<span class="string">'V'</span>)
+</pre><img vspace="5" hspace="5" src="FDM_04.png" alt=""> <h2 id="6">Part 2A</h2><p>Using the fallowing code this section looks a the analysis of the current through a semiconductor composed of a conductive regiond with two nonconductive blocks placed at the center of the semiconductor. To analyse the current through the semiconductor a potential of one was applied across the material.</p><pre class="codeinput">sig = 1;
+sigbox = 10e-2;
+
+
+box1pos= [29,20];
+box2pos= [29,ny];
+box1dim= [20,20];
+box2dim= [20,20];
+
+dx2 =1;
+dy2=1;
+nx2 = 78;
+ny2 = 52;
+V3 = zeros(ny,nx);
+G2= sparse(nx*ny,nx*ny);
+V02=1;
+BC2= [1, nan, 0,nan];
+B2 = zeros(1,nx*ny);
+cond = zeros (ny,nx);
+<span class="comment">% sets up conduction map</span>
+
+<span class="keyword">for</span> p = 1:ny2
+    <span class="keyword">for</span> m = 1:nx2
+
+        <span class="keyword">if</span> ((m &gt;=box1pos(1)&amp;m &lt;=box1pos(1)+box1dim(1))&amp;p &lt;=box1pos(2)&amp;p &gt;=box1pos(2)-box1dim(2))|((m &gt;=box2pos(1)&amp;m &lt;=box2pos(1)+box2dim(1))&amp;p &lt;=box2pos(2)&amp;p &gt;=box2pos(2)-box2dim(2))
+            cond(p,m) =sigbox;
+        <span class="keyword">else</span>
+           cond(p,m) =sig;
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+
+
+<span class="keyword">for</span> p = 1:size(B2,2)
+
+    <span class="keyword">if</span> (p== 1)
+        <span class="keyword">if</span> isnan(BC2(1))
+
+        <span class="keyword">else</span>
+            B2(p)=BC2(1);
+        <span class="keyword">end</span>
+    <span class="keyword">elseif</span> (p == nx)
+        <span class="keyword">if</span> isnan(BC2(3))
+
+        <span class="keyword">else</span>
+            B2(p)=BC2(3);
+        <span class="keyword">end</span>
+    <span class="keyword">elseif</span> (p == (1+(ny-1)*nx))
+        <span class="keyword">if</span> isnan(BC2(1))
+
+        <span class="keyword">else</span>
+            B2(p)=BC2(1);
+        <span class="keyword">end</span>
+    <span class="keyword">elseif</span>(p == nx*ny)
+        <span class="keyword">if</span> isnan(BC2(3))
+
+        <span class="keyword">else</span>
+            B2(p)=BC2(3);
+        <span class="keyword">end</span>
+    <span class="keyword">elseif</span>(mod(p,nx)==0)
+        <span class="keyword">if</span> isnan(BC2(3))
+
+        <span class="keyword">else</span>
+            B2(p)=BC2(3);
+        <span class="keyword">end</span>
+    <span class="keyword">elseif</span>(mod(p-1,nx)==0)
+        <span class="keyword">if</span> isnan(BC2(1))
+
+        <span class="keyword">else</span>
+            B2(p) = BC2(1);
+        <span class="keyword">end</span>
+    <span class="keyword">elseif</span>(1&lt;p&amp;p&lt;nx)
+        <span class="keyword">if</span> isnan(BC2(4))
+
+        <span class="keyword">else</span>
+            B2(p) =BC2(4);
+        <span class="keyword">end</span>
+    <span class="keyword">elseif</span>((1+(ny-1)*nx)&lt;p&amp;p&lt;nx*ny)
+        <span class="keyword">if</span> isnan(BC2(2))
+
+        <span class="keyword">else</span>
+            B2(p) =BC2(2);
+        <span class="keyword">end</span>
+    <span class="keyword">else</span>
+
+    <span class="keyword">end</span>
+
+<span class="keyword">end</span>
+
+<span class="keyword">for</span> p = 1:ny2
+    <span class="keyword">for</span> m = 1:nx2
+        n = m+(p-1)*nx2;
+        nxm = (m-1)+(p-1)*nx2;
+        nxp = (m+1)+(p-1)*nx2;
+        nym = (m)+(p-2)*nx2;
+        nyp = m+(p)*nx2;
+        nxm2 = (m-2)+(p-1)*nx2;
+        nxp2=(m+2)+(p-1)*nx2;
+        nym2 = (m)+(p-3)*nx2;
+        nyp2 = m+(p+1)*nx2;
+        nxp3 = (m+3)+(p-1)*nx2;
+        nxm3 = (m-3)+(p-1)*nx2;
+
+        <span class="keyword">if</span> m == 1
+            G2(n,:)=0;
+            G2(n,n)=1;
+
+        <span class="keyword">elseif</span> m==nx2
+            G2(n,:)=0;
+            G2(n,n)=1;
+
+        <span class="keyword">elseif</span> p ==1
+
+            ryp = (cond(p,m)+cond(p+1,m))/2;
+            rxp = (cond(p,m)+cond(p,m+1))/2;
+            rxm = (cond(p,m)+cond(p,m-1))/2;
+
+            G2(n,n) = -(ryp+rxp+rxm);
+            G2(n,nyp)= ryp;
+            G2(n,nxm)= rxm;
+            G2(n,nxp) = rxp;
+
+        <span class="keyword">elseif</span> p==ny2
+            rym = (cond(p,m)+cond(p-1,m))/2;
+            rxp = (cond(p,m)+cond(p,m+1))/2;
+            rxm = (cond(p,m)+cond(p,m-1))/2;
+
+            G2(n,n) = -(rym+rxp+rxm);
+            G2(n,nym)= rym;
+            G2(n,nxm)= rxm;
+            G2(n,nxp) = rxp;
+        <span class="keyword">else</span>
+            ryp = (cond(p,m)+cond(p+1,m))/2;
+            rym = (cond(p,m)+cond(p-1,m))/2;
+            rxp = (cond(p,m)+cond(p,m+1))/2;
+            rxm = (cond(p,m)+cond(p,m-1))/2;
+
+            G2(n,n) = -(ryp+rym+rxp+rxm);
+            G2(n,nyp)= ryp;
+            G2(n,nym)= rym;
+            G2(n,nxm)= rxm;
+            G2(n,nxp) = rxp;
+        <span class="keyword">end</span>
+
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+<span class="comment">%figure('name', 'Matrix')</span>
+<span class="comment">%spy(G2)</span>
+
+V3 = G2\B2';
+Vout2 = zeros(ny, nx);
+<span class="keyword">for</span> p = 1:ny
+    <span class="keyword">for</span> m = 1:nx
+        n = m+(p-1)*nx;
+        Vout2(p,m) =V3(n);
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+</pre><p>The plot below shows the conductivity map for the semiconductor. The regionds of the map that are blue represent the regions that are inside the low conductivity boxes.</p><pre class="codeinput">figure
+surf(cond)
+title(<span class="string">'Sigma'</span>)
+xlabel(<span class="string">'X'</span>)
+ylabel(<span class="string">'Y'</span>)
+zlabel(<span class="string">'conductance'</span>)
+</pre><img vspace="5" hspace="5" src="FDM_05.png" alt=""> <p>The fallowing plot shows the voltage at each point of the mesh. From this plot it can be seen that the voltage trys to remain linear through the bottleneck but is distorted by the blocks. This is becaue there is a large voltage drop across the high resistanc blocks that forces the current to flow through the bottleneck causeing decrease in the voltage droped across this regioned due to the conservation of energy.</p><pre class="codeinput">figure
+title(<span class="string">'Voltage'</span>)
+surf(Vout2)
+xlabel(<span class="string">'X'</span>)
+ylabel(<span class="string">'Y'</span>)
+zlabel(<span class="string">'V'</span>)
+view(-45, -45)
+
+Ex= size (Vout2);
+Ey = size (Vout2);
+<span class="keyword">for</span> p = 1:ny
+    <span class="keyword">for</span> m = 1:nx
+
+        <span class="keyword">if</span> (m==1)
+            Ex(p,m) = Vout2(p,m+1)-Vout2(p,m);
+        <span class="keyword">elseif</span> m == nx
+             Ex(p,m) = Vout2(p,m)-Vout2(p,m-1);
+        <span class="keyword">else</span>
+             Ex(p,m) = (Vout2(p,m+1)-Vout2(p,m-1))/2;
+
+        <span class="keyword">end</span>
+         <span class="keyword">if</span> (p==1)
+            Ey(p,m) = Vout2(p+1,m)-Vout2(p,m);
+        <span class="keyword">elseif</span> p == ny
+             Ey(p,m) = Vout2(p,m)-Vout2(p-1,m);
+        <span class="keyword">else</span>
+             Ey(p,m) = (Vout2(p+1,m)-Vout2(p-1,m))/2;
+
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+Ex = -Ex;
+Ey = -Ey;
+
+currentx = cond.*Ex;
+currenty = cond.*Ey;
+</pre><img vspace="5" hspace="5" src="FDM_06.png" alt=""> <p>From the plot below it can be seen that the magnatude of the electric feild increase in the high resistanc blocks. This corasponds to the large voltage drop in these regionds seen above.</p><pre class="codeinput">figure
+title(<span class="string">'Electric Feild'</span>)
+quiver(Ex, Ey);
+xlabel(<span class="string">'X'</span>)
+ylabel(<span class="string">'Y'</span>)
+</pre><img vspace="5" hspace="5" src="FDM_07.png" alt=""> <p>As expected the fallowing plot shows an increas in current through the bottleneck that accounts for the decreas in current through the high resistance blocks.</p><pre class="codeinput">figure
+title(<span class="string">'Current'</span>)
+quiver(currentx,currenty)
+xlabel(<span class="string">'X'</span>)
+ylabel(<span class="string">'Y'</span>)
+</pre><img vspace="5" hspace="5" src="FDM_08.png" alt=""> <h2 id="11">Part 2B</h2><p>The code below looks at the effect that mesh size has on the total current flowing through the simiconductor. To acompish this the mesh size was incremented by the base mesh size to increase the reselution of the plot. The step size of each grid was also divided by the number of increments to maintain the scale of the semiconductor. From the plot below it can be seen that as the step size decrease the current converges to a value. This is becaue the accuracy of the simulation is dependent on the step size. It is also important to note that the increasing the step size increases the simulation time because the number of iterations needed increases.</p><pre class="codeinput"><span class="keyword">for</span> l =1 :5
+
+sig = 1;
+sigbox = 10e-2;
+
+
+
+
+dx2 =1/l;
+dy2=1/l;
+nx2 = 78*l;
+ny2 = 52*l;
+box1pos= [29*l,20*l];
+box2pos= [29*l,ny2];
+box1dim= [20*l,20*l];
+box2dim= [20*l,20*l];
+V3 = zeros(ny2,nx2);
+G2= sparse(nx2*ny2,nx2*ny2);
+V02=1;
+BC2= [1, nan, 0,nan];
+B2 = zeros(1,nx2*ny2);
+cond = zeros (ny2,nx2);
+<span class="comment">% sets up conduction map</span>
+
+<span class="keyword">for</span> p = 1:ny2
+    <span class="keyword">for</span> m = 1:nx2
+
+        <span class="keyword">if</span> ((m &gt;=box1pos(1)&amp;m &lt;=box1pos(1)+box1dim(1))&amp;p &lt;=box1pos(2)&amp;p &gt;=box1pos(2)-box1dim(2))|((m &gt;=box2pos(1)&amp;m &lt;=box2pos(1)+box2dim(1))&amp;p &lt;=box2pos(2)&amp;p &gt;=box2pos(2)-box2dim(2))
+            cond(p,m) =sigbox;
+        <span class="keyword">else</span>
+           cond(p,m) =sig;
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+
+
+<span class="keyword">for</span> p = 1:size(B2,2)
+
+    <span class="keyword">if</span> (p== 1)
+        <span class="keyword">if</span> isnan(BC2(1))
+
+        <span class="keyword">else</span>
+            B2(p)=BC2(1);
+        <span class="keyword">end</span>
+    <span class="keyword">elseif</span> (p == nx2)
+        <span class="keyword">if</span> isnan(BC2(3))
+
+        <span class="keyword">else</span>
+            B2(p)=BC2(3);
+        <span class="keyword">end</span>
+    <span class="keyword">elseif</span> (p == (1+(ny2-1)*nx2))
+        <span class="keyword">if</span> isnan(BC2(1))
+
+        <span class="keyword">else</span>
+            B2(p)=BC2(1);
+        <span class="keyword">end</span>
+    <span class="keyword">elseif</span>(p == nx2*ny2)
+        <span class="keyword">if</span> isnan(BC2(3))
+
+        <span class="keyword">else</span>
+            B2(p)=BC2(3);
+        <span class="keyword">end</span>
+    <span class="keyword">elseif</span>(mod(p,nx2)==0)
+        <span class="keyword">if</span> isnan(BC2(3))
+
+        <span class="keyword">else</span>
+            B2(p)=BC2(3);
+        <span class="keyword">end</span>
+    <span class="keyword">elseif</span>(mod(p-1,nx2)==0)
+        <span class="keyword">if</span> isnan(BC2(1))
+
+        <span class="keyword">else</span>
+            B2(p) = BC2(1);
+        <span class="keyword">end</span>
+    <span class="keyword">elseif</span>(1&lt;p&amp;p&lt;nx2)
+        <span class="keyword">if</span> isnan(BC2(4))
+
+        <span class="keyword">else</span>
+            B2(p) =BC2(4);
+        <span class="keyword">end</span>
+    <span class="keyword">elseif</span>((1+(ny2-1)*nx2)&lt;p&amp;p&lt;nx2*ny2)
+        <span class="keyword">if</span> isnan(BC2(2))
+
+        <span class="keyword">else</span>
+            B2(p) =BC2(2);
+        <span class="keyword">end</span>
+    <span class="keyword">else</span>
+
+    <span class="keyword">end</span>
+
+<span class="keyword">end</span>
+
+<span class="keyword">for</span> p = 1:ny2
+    <span class="keyword">for</span> m = 1:nx2
+        n = m+(p-1)*nx2;
+        nxm = (m-1)+(p-1)*nx2;
+        nxp = (m+1)+(p-1)*nx2;
+        nym = (m)+(p-2)*nx2;
+        nyp = m+(p)*nx2;
+        nxm2 = (m-2)+(p-1)*nx2;
+        nxp2=(m+2)+(p-1)*nx2;
+        nym2 = (m)+(p-3)*nx2;
+        nyp2 = m+(p+1)*nx2;
+        nxp3 = (m+3)+(p-1)*nx2;
+        nxm3 = (m-3)+(p-1)*nx2;
+
+        <span class="keyword">if</span> m == 1
+            G2(n,:)=0;
+            G2(n,n)=1;
+
+        <span class="keyword">elseif</span> m==nx2
+            G2(n,:)=0;
+            G2(n,n)=1;
+
+        <span class="keyword">elseif</span> p ==1
+
+            ryp = (cond(p,m)+cond(p+1,m))/(2);
+            rxp = (cond(p,m)+cond(p,m+1))/(2);
+            rxm = (cond(p,m)+cond(p,m-1))/(2);
+
+            G2(n,n) = -(ryp+rxp+rxm);
+            G2(n,nyp)= ryp;
+            G2(n,nxm)= rxm;
+            G2(n,nxp) = rxp;
+
+        <span class="keyword">elseif</span> p==ny2
+            rym = (cond(p,m)+cond(p-1,m))/(2);
+            rxp = (cond(p,m)+cond(p,m+1))/(2);
+            rxm = (cond(p,m)+cond(p,m-1))/(2);
+
+            G2(n,n) = -(rym+rxp+rxm);
+            G2(n,nym)= rym;
+            G2(n,nxm)= rxm;
+            G2(n,nxp) = rxp;
+        <span class="keyword">else</span>
+            ryp = (cond(p,m)+cond(p+1,m))/(2);
+            rym = (cond(p,m)+cond(p-1,m))/(2);
+            rxp = (cond(p,m)+cond(p,m+1))/(2);
+            rxm = (cond(p,m)+cond(p,m-1))/(2);
+
+            G2(n,n) = -(ryp+rym+rxp+rxm);
+            G2(n,nyp)= ryp;
+            G2(n,nym)= rym;
+            G2(n,nxm)= rxm;
+            G2(n,nxp) = rxp;
+        <span class="keyword">end</span>
+
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+<span class="comment">%figure('name', 'Matrix')</span>
+<span class="comment">%spy(G2)</span>
+
+V3 = G2\B2';
+Vout2 = zeros(ny2, nx2);
+<span class="keyword">for</span> p = 1:ny2
+    <span class="keyword">for</span> m = 1:nx2
+        n = m+(p-1)*nx2;
+        Vout2(p,m) =V3(n);
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="comment">% figure</span>
+<span class="comment">% surf(cond)</span>
+<span class="comment">% xlabel('X')</span>
+<span class="comment">% ylabel('Y')</span>
+<span class="comment">% zlabel('conductance')</span>
+<span class="comment">% figure</span>
+<span class="comment">% surf(Vout2)</span>
+<span class="comment">% xlabel('X')</span>
+<span class="comment">% ylabel('Y')</span>
+<span class="comment">% zlabel('V')</span>
+<span class="comment">% view(-45, -45)</span>
+
+Ex= zeros(size (Vout2));
+Ey = zeros(size (Vout2));
+<span class="keyword">for</span> p = 1:ny2
+    <span class="keyword">for</span> m = 1:nx2
+
+        <span class="keyword">if</span> (m==1)
+            Ex(p,m) = (Vout2(p,m+1)-Vout2(p,m))/dx2;
+        <span class="keyword">elseif</span> m == nx2
+             Ex(p,m) = (Vout2(p,m)-Vout2(p,m-1))/dx2;
+        <span class="keyword">else</span>
+             Ex(p,m) = (Vout2(p,m+1)-Vout2(p,m-1))/(2*dx2);
+
+        <span class="keyword">end</span>
+         <span class="keyword">if</span> (p==1)
+            Ey(p,m) = (Vout2(p+1,m)-Vout2(p,m))/dy2;
+        <span class="keyword">elseif</span> p == ny2
+             Ey(p,m) = (Vout2(p,m)-Vout2(p-1,m))/dy2;
+        <span class="keyword">else</span>
+             Ey(p,m) = (Vout2(p+1,m)-Vout2(p-1,m))/(2*dy2);
+
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+Ex = -Ex;
+Ey = -Ey;
+
+currentx = cond.*Ex.*dx2;
+currenty = cond.*Ey.*dy2;
+
+
+
+<span class="comment">% figure</span>
+<span class="comment">% quiver(Ex, Ey);</span>
+<span class="comment">% xlabel('X')</span>
+<span class="comment">% ylabel('Y')</span>
+<span class="comment">%</span>
+<span class="comment">%</span>
+<span class="comment">% figure</span>
+<span class="comment">% quiver(currentx,currenty)</span>
+<span class="comment">% xlabel('X')</span>
+<span class="comment">% ylabel('Y')</span>
+
+    current(l) = mean(sum(sqrt(currentx.^2+ currenty.^2)));
+<span class="keyword">end</span>
+figure
+plot(linspace(1,5,5),current)
+xlabel(<span class="string">'scale factor'</span>)
+ylabel(<span class="string">'current'</span>)
+</pre><img vspace="5" hspace="5" src="FDM_09.png" alt=""> <h2 id="12">Part 2C</h2><p>This section looks at the effect that the size of the gap or conversly the size of the blocks has on the current through the semiconductor. To accomplish this the size of the blocks were itertavly increased and the total current through was recoded and ploted. from the plot below it can be seen that the current through the material decrease with the size of the high resistance regions. The current becomes remains steady once the high resistance regionds meets this is because the currnet nolonger has a low recistance path to follow and is forced to moved throgh the high resistance region.</p><pre class="codeinput"><span class="keyword">for</span> l =1 :30
+
+sig = 1;
+sigbox = 10e-2;
+
+
+box1pos= [29,9+l];
+box2pos= [29,ny];
+box1dim= [20,9+l];
+box2dim= [20,9+l];
+
+dx2 =1;
+dy2=1;
+nx2 = 78;
+ny2 = 52;
+V3 = zeros(ny,nx);
+G2= sparse(nx*ny,nx*ny);
+V02=1;
+BC2= [1, nan, 0,nan];
+B2 = zeros(1,nx*ny);
+cond = zeros (ny,nx);
+<span class="comment">% sets up conduction map</span>
+
+<span class="keyword">for</span> p = 1:ny2
+    <span class="keyword">for</span> m = 1:nx2
+
+        <span class="keyword">if</span> ((m &gt;=box1pos(1)&amp;m &lt;=box1pos(1)+box1dim(1))&amp;p &lt;=box1pos(2)&amp;p &gt;=box1pos(2)-box1dim(2))|((m &gt;=box2pos(1)&amp;m &lt;=box2pos(1)+box2dim(1))&amp;p &lt;=box2pos(2)&amp;p &gt;=box2pos(2)-box2dim(2))
+            cond(p,m) =sigbox;
+        <span class="keyword">else</span>
+           cond(p,m) =sig;
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+
+
+<span class="keyword">for</span> p = 1:size(B2,2)
+
+    <span class="keyword">if</span> (p== 1)
+        <span class="keyword">if</span> isnan(BC2(1))
+
+        <span class="keyword">else</span>
+            B2(p)=BC2(1);
+        <span class="keyword">end</span>
+    <span class="keyword">elseif</span> (p == nx)
+        <span class="keyword">if</span> isnan(BC2(3))
+
+        <span class="keyword">else</span>
+            B2(p)=BC2(3);
+        <span class="keyword">end</span>
+    <span class="keyword">elseif</span> (p == (1+(ny-1)*nx))
+        <span class="keyword">if</span> isnan(BC2(1))
+
+        <span class="keyword">else</span>
+            B2(p)=BC2(1);
+        <span class="keyword">end</span>
+    <span class="keyword">elseif</span>(p == nx*ny)
+        <span class="keyword">if</span> isnan(BC2(3))
+
+        <span class="keyword">else</span>
+            B2(p)=BC2(3);
+        <span class="keyword">end</span>
+    <span class="keyword">elseif</span>(mod(p,nx)==0)
+        <span class="keyword">if</span> isnan(BC2(3))
+
+        <span class="keyword">else</span>
+            B2(p)=BC2(3);
+        <span class="keyword">end</span>
+    <span class="keyword">elseif</span>(mod(p-1,nx)==0)
+        <span class="keyword">if</span> isnan(BC2(1))
+
+        <span class="keyword">else</span>
+            B2(p) = BC2(1);
+        <span class="keyword">end</span>
+    <span class="keyword">elseif</span>(1&lt;p&amp;p&lt;nx)
+        <span class="keyword">if</span> isnan(BC2(4))
+
+        <span class="keyword">else</span>
+            B2(p) =BC2(4);
+        <span class="keyword">end</span>
+    <span class="keyword">elseif</span>((1+(ny-1)*nx)&lt;p&amp;p&lt;nx*ny)
+        <span class="keyword">if</span> isnan(BC2(2))
+
+        <span class="keyword">else</span>
+            B2(p) =BC2(2);
+        <span class="keyword">end</span>
+    <span class="keyword">else</span>
+
+    <span class="keyword">end</span>
+
+<span class="keyword">end</span>
+
+<span class="keyword">for</span> p = 1:ny2
+    <span class="keyword">for</span> m = 1:nx2
+        n = m+(p-1)*nx2;
+        nxm = (m-1)+(p-1)*nx2;
+        nxp = (m+1)+(p-1)*nx2;
+        nym = (m)+(p-2)*nx2;
+        nyp = m+(p)*nx2;
+        nxm2 = (m-2)+(p-1)*nx2;
+        nxp2=(m+2)+(p-1)*nx2;
+        nym2 = (m)+(p-3)*nx2;
+        nyp2 = m+(p+1)*nx2;
+        nxp3 = (m+3)+(p-1)*nx2;
+        nxm3 = (m-3)+(p-1)*nx2;
+
+        <span class="keyword">if</span> m == 1
+            G2(n,:)=0;
+            G2(n,n)=1;
+
+        <span class="keyword">elseif</span> m==nx2
+            G2(n,:)=0;
+            G2(n,n)=1;
+
+        <span class="keyword">elseif</span> p ==1
+
+            ryp = (cond(p,m)+cond(p+1,m))/2;
+            rxp = (cond(p,m)+cond(p,m+1))/2;
+            rxm = (cond(p,m)+cond(p,m-1))/2;
+
+            G2(n,n) = -(ryp+rxp+rxm);
+            G2(n,nyp)= ryp;
+            G2(n,nxm)= rxm;
+            G2(n,nxp) = rxp;
+
+        <span class="keyword">elseif</span> p==ny2
+            rym = (cond(p,m)+cond(p-1,m))/2;
+            rxp = (cond(p,m)+cond(p,m+1))/2;
+            rxm = (cond(p,m)+cond(p,m-1))/2;
+
+            G2(n,n) = -(rym+rxp+rxm);
+            G2(n,nym)= rym;
+            G2(n,nxm)= rxm;
+            G2(n,nxp) = rxp;
+        <span class="keyword">else</span>
+            ryp = (cond(p,m)+cond(p+1,m))/2;
+            rym = (cond(p,m)+cond(p-1,m))/2;
+            rxp = (cond(p,m)+cond(p,m+1))/2;
+            rxm = (cond(p,m)+cond(p,m-1))/2;
+
+            G2(n,n) = -(ryp+rym+rxp+rxm);
+            G2(n,nyp)= ryp;
+            G2(n,nym)= rym;
+            G2(n,nxm)= rxm;
+            G2(n,nxp) = rxp;
+        <span class="keyword">end</span>
+
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+<span class="comment">%figure('name', 'Matrix')</span>
+<span class="comment">%spy(G2)</span>
+
+V3 = G2\B2';
+Vout2 = zeros(ny, nx);
+<span class="keyword">for</span> p = 1:ny
+    <span class="keyword">for</span> m = 1:nx
+        n = m+(p-1)*nx;
+        Vout2(p,m) =V3(n);
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="comment">% figure</span>
+<span class="comment">% surf(cond)</span>
+<span class="comment">% xlabel('X')</span>
+<span class="comment">% ylabel('Y')</span>
+<span class="comment">% zlabel('conductance')</span>
+<span class="comment">% figure</span>
+<span class="comment">% surf(Vout2)</span>
+<span class="comment">% xlabel('X')</span>
+<span class="comment">% ylabel('Y')</span>
+<span class="comment">% zlabel('V')</span>
+<span class="comment">% view(-45, -45)</span>
+
+Ex= size (Vout2);
+Ey = size (Vout2);
+<span class="keyword">for</span> p = 1:ny
+    <span class="keyword">for</span> m = 1:nx
+
+        <span class="keyword">if</span> (m==1)
+            Ex(p,m) = Vout2(p,m+1)-Vout2(p,m);
+        <span class="keyword">elseif</span> m == nx
+             Ex(p,m) = Vout2(p,m)-Vout2(p,m-1);
+        <span class="keyword">else</span>
+             Ex(p,m) = (Vout2(p,m+1)-Vout2(p,m-1))/2;
+
+        <span class="keyword">end</span>
+         <span class="keyword">if</span> (p==1)
+            Ey(p,m) = Vout2(p+1,m)-Vout2(p,m);
+        <span class="keyword">elseif</span> p == ny
+             Ey(p,m) = Vout2(p,m)-Vout2(p-1,m);
+        <span class="keyword">else</span>
+             Ey(p,m) = (Vout2(p+1,m)-Vout2(p-1,m))/2;
+
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+Ex = -Ex;
+Ey = -Ey;
+
+currentx = cond.*Ex;
+currenty = cond.*Ey;
+
+
+
+<span class="comment">% figure</span>
+<span class="comment">% quiver(Ex, Ey);</span>
+<span class="comment">% xlabel('X')</span>
+<span class="comment">% ylabel('Y')</span>
+<span class="comment">%</span>
+<span class="comment">%</span>
+<span class="comment">% figure</span>
+<span class="comment">% quiver(currentx,currenty)</span>
+<span class="comment">% xlabel('X')</span>
+<span class="comment">% ylabel('Y')</span>
+
+    current(l) = mean(sum(sqrt(currentx.^2+ currenty.^2)));
+<span class="keyword">end</span>
+figure
+plot(linspace(10,40,30),current)
+xlabel(<span class="string">'block size'</span>)
+ylabel(<span class="string">'current'</span>)
+</pre><img vspace="5" hspace="5" src="FDM_10.png" alt=""> <h2 id="13">Part 2D</h2><p>This secton looks at the current that flows throgh the material given a change in conductivity of the blocks. To analyse this a variaty of conductances where iterated through and the resulting currents were stored. From the plot below it can be seen that the current through the semiconductor increace as the conductance increases. It can also be seen that the plot tails of as the "low resistance" material becomes more resitive than the "high resistive material". This is because paralel resistaces approch the value of the lowest resistive branch as the resistance of other branches increase.</p><pre class="codeinput">t = [1e-10,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100];
+<span class="keyword">for</span> l =1 :101
+
+sig = 1;
+sigbox = t(l)*10e-2;
+
+
+box1pos= [29,20];
+box2pos= [29,ny];
+box1dim= [20,20];
+box2dim= [20,20];
+
+dx2 =1;
+dy2=1;
+nx2 = 78;
+ny2 = 52;
+V3 = zeros(ny,nx);
+G2= sparse(nx*ny,nx*ny);
+V02=1;
+BC2= [1, nan, 0,nan];
+B2 = zeros(1,nx*ny);
+cond = zeros (ny,nx);
+<span class="comment">% sets up conduction map</span>
+
+<span class="keyword">for</span> p = 1:ny2
+    <span class="keyword">for</span> m = 1:nx2
+
+        <span class="keyword">if</span> ((m &gt;=box1pos(1)&amp;m &lt;=box1pos(1)+box1dim(1))&amp;p &lt;=box1pos(2)&amp;p &gt;=box1pos(2)-box1dim(2))|((m &gt;=box2pos(1)&amp;m &lt;=box2pos(1)+box2dim(1))&amp;p &lt;=box2pos(2)&amp;p &gt;=box2pos(2)-box2dim(2))
+            cond(p,m) =sigbox;
+        <span class="keyword">else</span>
+           cond(p,m) =sig;
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+
+
+<span class="keyword">for</span> p = 1:size(B2,2)
+
+    <span class="keyword">if</span> (p== 1)
+        <span class="keyword">if</span> isnan(BC2(1))
+
+        <span class="keyword">else</span>
+            B2(p)=BC2(1);
+        <span class="keyword">end</span>
+    <span class="keyword">elseif</span> (p == nx)
+        <span class="keyword">if</span> isnan(BC2(3))
+
+        <span class="keyword">else</span>
+            B2(p)=BC2(3);
+        <span class="keyword">end</span>
+    <span class="keyword">elseif</span> (p == (1+(ny-1)*nx))
+        <span class="keyword">if</span> isnan(BC2(1))
+
+        <span class="keyword">else</span>
+            B2(p)=BC2(1);
+        <span class="keyword">end</span>
+    <span class="keyword">elseif</span>(p == nx*ny)
+        <span class="keyword">if</span> isnan(BC2(3))
+
+        <span class="keyword">else</span>
+            B2(p)=BC2(3);
+        <span class="keyword">end</span>
+    <span class="keyword">elseif</span>(mod(p,nx)==0)
+        <span class="keyword">if</span> isnan(BC2(3))
+
+        <span class="keyword">else</span>
+            B2(p)=BC2(3);
+        <span class="keyword">end</span>
+    <span class="keyword">elseif</span>(mod(p-1,nx)==0)
+        <span class="keyword">if</span> isnan(BC2(1))
+
+        <span class="keyword">else</span>
+            B2(p) = BC2(1);
+        <span class="keyword">end</span>
+    <span class="keyword">elseif</span>(1&lt;p&amp;p&lt;nx)
+        <span class="keyword">if</span> isnan(BC2(4))
+
+        <span class="keyword">else</span>
+            B2(p) =BC2(4);
+        <span class="keyword">end</span>
+    <span class="keyword">elseif</span>((1+(ny-1)*nx)&lt;p&amp;p&lt;nx*ny)
+        <span class="keyword">if</span> isnan(BC2(2))
+
+        <span class="keyword">else</span>
+            B2(p) =BC2(2);
+        <span class="keyword">end</span>
+    <span class="keyword">else</span>
+
+    <span class="keyword">end</span>
+
+<span class="keyword">end</span>
+
+<span class="keyword">for</span> p = 1:ny2
+    <span class="keyword">for</span> m = 1:nx2
+        n = m+(p-1)*nx2;
+        nxm = (m-1)+(p-1)*nx2;
+        nxp = (m+1)+(p-1)*nx2;
+        nym = (m)+(p-2)*nx2;
+        nyp = m+(p)*nx2;
+        nxm2 = (m-2)+(p-1)*nx2;
+        nxp2=(m+2)+(p-1)*nx2;
+        nym2 = (m)+(p-3)*nx2;
+        nyp2 = m+(p+1)*nx2;
+        nxp3 = (m+3)+(p-1)*nx2;
+        nxm3 = (m-3)+(p-1)*nx2;
+
+        <span class="keyword">if</span> m == 1
+            G2(n,:)=0;
+            G2(n,n)=1;
+
+        <span class="keyword">elseif</span> m==nx2
+            G2(n,:)=0;
+            G2(n,n)=1;
+
+        <span class="keyword">elseif</span> p ==1
+
+            ryp = (cond(p,m)+cond(p+1,m))/2;
+            rxp = (cond(p,m)+cond(p,m+1))/2;
+            rxm = (cond(p,m)+cond(p,m-1))/2;
+
+            G2(n,n) = -(ryp+rxp+rxm);
+            G2(n,nyp)= ryp;
+            G2(n,nxm)= rxm;
+            G2(n,nxp) = rxp;
+
+        <span class="keyword">elseif</span> p==ny2
+            rym = (cond(p,m)+cond(p-1,m))/2;
+            rxp = (cond(p,m)+cond(p,m+1))/2;
+            rxm = (cond(p,m)+cond(p,m-1))/2;
+
+            G2(n,n) = -(rym+rxp+rxm);
+            G2(n,nym)= rym;
+            G2(n,nxm)= rxm;
+            G2(n,nxp) = rxp;
+        <span class="keyword">else</span>
+            ryp = (cond(p,m)+cond(p+1,m))/2;
+            rym = (cond(p,m)+cond(p-1,m))/2;
+            rxp = (cond(p,m)+cond(p,m+1))/2;
+            rxm = (cond(p,m)+cond(p,m-1))/2;
+
+            G2(n,n) = -(ryp+rym+rxp+rxm);
+            G2(n,nyp)= ryp;
+            G2(n,nym)= rym;
+            G2(n,nxm)= rxm;
+            G2(n,nxp) = rxp;
+        <span class="keyword">end</span>
+
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+<span class="comment">%figure('name', 'Matrix')</span>
+<span class="comment">%spy(G2)</span>
+
+V3 = G2\B2';
+Vout2 = zeros(ny, nx);
+<span class="keyword">for</span> p = 1:ny
+    <span class="keyword">for</span> m = 1:nx
+        n = m+(p-1)*nx;
+        Vout2(p,m) =V3(n);
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="comment">% figure</span>
+<span class="comment">% surf(cond)</span>
+<span class="comment">% xlabel('X')</span>
+<span class="comment">% ylabel('Y')</span>
+<span class="comment">% zlabel('conductance')</span>
+<span class="comment">% figure</span>
+<span class="comment">% surf(Vout2)</span>
+<span class="comment">% xlabel('X')</span>
+<span class="comment">% ylabel('Y')</span>
+<span class="comment">% zlabel('V')</span>
+<span class="comment">% view(-45, -45)</span>
+
+Ex= size (Vout2);
+Ey = size (Vout2);
+<span class="keyword">for</span> p = 1:ny
+    <span class="keyword">for</span> m = 1:nx
+
+        <span class="keyword">if</span> (m==1)
+            Ex(p,m) = Vout2(p,m+1)-Vout2(p,m);
+        <span class="keyword">elseif</span> m == nx
+             Ex(p,m) = Vout2(p,m)-Vout2(p,m-1);
+        <span class="keyword">else</span>
+             Ex(p,m) = (Vout2(p,m+1)-Vout2(p,m-1))/2;
+
+        <span class="keyword">end</span>
+         <span class="keyword">if</span> (p==1)
+            Ey(p,m) = Vout2(p+1,m)-Vout2(p,m);
+        <span class="keyword">elseif</span> p == ny
+             Ey(p,m) = Vout2(p,m)-Vout2(p-1,m);
+        <span class="keyword">else</span>
+             Ey(p,m) = (Vout2(p+1,m)-Vout2(p-1,m))/2;
+
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+Ex = -Ex;
+Ey = -Ey;
+
+currentx = cond.*Ex;
+currenty = cond.*Ey;
+
+
+
+<span class="comment">% figure</span>
+<span class="comment">% quiver(Ex, Ey);</span>
+<span class="comment">% xlabel('X')</span>
+<span class="comment">% ylabel('Y')</span>
+<span class="comment">%</span>
+<span class="comment">%</span>
+<span class="comment">% figure</span>
+<span class="comment">% quiver(currentx,currenty)</span>
+<span class="comment">% xlabel('X')</span>
+<span class="comment">% ylabel('Y')</span>
+
+    current(l) = mean(sum(sqrt(currentx.^2+ currenty.^2)));
+<span class="keyword">end</span>
+figure
+plot(t*10e-2,current)
+xlabel(<span class="string">'conductivity'</span>)
+ylabel(<span class="string">'current'</span>)
+</pre><img vspace="5" hspace="5" src="FDM_11.png" alt=""> <h2 id="14">Conclution</h2><p>In conclution in this assignment the current handeling ability of a semiconductor was analysed using the finite diffrnce method. The efffect of mesh size, bottleneck size and conductivity were also analysed. It was found that the accuracy of the simulation is dependent on the mesh size. It was also found that increaseing the size of the bottleneck decreases the current where as an increase in their conductivity increases the current.</p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2017a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Assignment-2 Finite Difference Method
+% Steven Cramp 101030294
+
+%% Introduction 
+% The purpouse of this lab is to analyse the current and voltage through a
+% semiconductor using the finite diffrence method. This lab will look at
+% the effect that diffrences between finite diffrence method and the analitical 
+% soulitions for the voltage in the semiconductor. It will also look at the
+% effects that mesh size, obstacle size and conductivity of the obsticals
+% has on the current through the semiconductor.
+
+
+%% Part 1 A 
+% This section looks at the solution for the case where a voltage is
+% applied to one side of the semiconductor, while the other side is
+% grounded, and the top and bottom are left free. The figure below shows
+% the voltage at each point in the mesh relitive to ground for the test
+% case. It can be seen that the voltage fallows a line with a negitive
+% slope. This is because the top and bottom are not held at a value and are
+% allowed to converge to a voltage. The voltage that they converge to is
+% the diffrence between the voltages divided by the length of the
+% semiconducter times the distance along the semiconductor plus the applied voltage.
+% This comes from Gauss's law.
+
+clear
+clc
+close all
+
+dx =1;
+dy=1;
+nx = 78;
+ny = 52;
+V = zeros(ny,nx);
+G = sparse(nx*ny,nx*ny);
+V0=1;
+BC= [1, nan, 0,nan];
+B = zeros(1,nx*ny);
+for p = 1:size(B,2)
+    
+    if (p== 1)
+        if isnan(BC(1))
+            
+        else
+            B(p)=BC(1);
+        end
+    elseif (p == nx)
+        if isnan(BC(3))
+            
+        else
+            B(p)=BC(3);
+        end
+    elseif (p == (1+(ny-1)*nx))
+        if isnan(BC(1))
+            
+        else
+            B(p)=BC(1);
+        end
+    elseif(p == nx*ny)
+        if isnan(BC(3))
+            
+        else
+            B(p)=BC(3);
+        end
+    elseif(mod(p,nx)==0)
+        if isnan(BC(3))
+            
+        else
+            B(p)=BC(3);
+        end
+    elseif(mod(p-1,nx)==0)
+        if isnan(BC(1))
+            
+        else
+            B(p) = BC(1);
+        end
+    elseif(1<p&p<nx)
+        if isnan(BC(4))
+            
+        else
+            B(p) =BC(4);
+        end
+    elseif((1+(ny-1)*nx)<p&p<nx*ny)
+        if isnan(BC(2))
+            
+        else
+            B(p) =BC(2);
+        end
+    else
+        
+    end
+    
+end
+
+for p = 1:ny
+    for m = 1:nx
+        n = m+(p-1)*nx;
+        nxm = (m-1)+(p-1)*nx;
+        nxp = (m+1)+(p-1)*nx;
+        nym = (m)+(p-2)*nx;
+        nyp = m+(p)*nx;
+        nxm2 = (m-2)+(p-1)*nx;
+        nxp2=(m+2)+(p-1)*nx;
+        nym2 = (m)+(p-3)*nx;
+        nyp2 = m+(p+1)*nx;
+        nxp3 = (m+3)+(p-1)*nx;
+        nxm3 = (m-3)+(p-1)*nx;
+        
+        if (n == 1)
+            if (isnan(BC(1)))
+                G(n,n)=-3/(2*dy)+2/(dx^3);
+                G(n,nyp) =4/(2*dy);
+                G(n,nyp2) =1/(2*dy);
+                G(n,nxp)=-5/(dx^3);
+                G(n,nxp2) =4/(dx^3);
+                G(n,nxp3) =-1/(dx^3);
+            else
+                G(n,n)=1;
+                
+            end
+        elseif (n == nx)
+            if (isnan(BC(3)))
+                G(n,n)=3/(2*dx)+2/(dx^3);
+                G(n,nym) =-4/(2*dx);
+                G(n,nym2) =1/(2*dx);
+                G(n,nxm)=-5/(dx^3);
+                G(n,nxm2) =4/(dx^3);
+                G(n,nxm3) =-1/(dx^3);
+            else
+                G(n,n)=1;
+                
+            end
+        elseif(n == (1+(ny-1)*nx))
+            if (isnan(BC(1)))
+                G(n,n)=3/(2*dy)+2/(dx^3);
+                G(n,nyp) =-4/(2*dy);
+                G(n,nyp2) =1/(2*dy);
+                G(n,nxp)=-5/(dx^3);
+                G(n,nxp2) =4/(dx^3);
+                G(n,nxp3) =-1/(dx^3);
+            else
+                G(n,n)=1;
+                
+            end
+        elseif(n == nx*ny)
+            if (isnan(BC(3)))
+                G(n,n)=3/(2*dy)+2/(dx^3);
+                G(n,nyp) =-4/(2*dy);
+                G(n,nyp2) =1/(2*dy);
+                G(n,nxm)=-5/(dx^3);
+                G(n,nxm2) =4/(dx^3);
+                G(n,nxm3) =-1/(dx^3);
+            else
+                G(n,n)=1;
+                
+            end
+        elseif(mod(n,nx)==0)
+            if (isnan(BC(3)))
+                G(n,n)=2/(dx^3);
+                G(n,nym) =1/(2*dy);
+                G(n,nyp) =1/(2*dy);
+                G(n,nxm)=-5/(dx^3);
+                G(n,nxm2) =4/(dx^3);
+                G(n,nxm3) =-1/(dx^3);
+            else
+                G(n,n)=1;
+                
+            end
+        elseif(mod(n-1,nx)==0)
+            if (isnan(BC(1)))
+                G(n,n)=2/(dx^3);
+                G(n,nym) =1/(2*dy);
+                G(n,nyp) =1/(2*dy);
+                G(n,nxp)=-5/(dx^3);
+                G(n,nxp2) =4/(dx^3);
+                G(n,nxp3) =-1/(dx^3);
+            else
+                G(n,n)=1;
+                
+            end
+        elseif (1<n&n<nx)
+            if (isnan(BC(4)))
+                G(n,n)=-3/(2*dy)-2/(dx^2);
+                G(n,nyp) =4/(2*dy);
+                G(n,nyp2) =-1/(2*dy);
+                G(n,nxp) = 1/(dx^2);
+                G(n,nxm) = 1/(dx^2);
+            else
+                G(n,n)=1;
+                
+            end
+        elseif ((1+(ny-1)*nx)<n&n<nx*ny)
+            if (isnan(BC(2)))
+                G(n,n)=3/(2*dy)-2/(dx^2);
+                
+                G(n,nym)=-4/(2*dy);
+                G(n,nym2) =1/(2*dy);
+                G(n,nxp) = 1/(dx^2);
+                G(n,nxm) = 1/(dx^2);
+            else
+                G(n,n)=1;
+                
+            end
+        else
+            
+            G(n,n)=-4/(dx^2);
+            G(n,nxp) = 1/(dx^2);
+            G(n,nxm) = 1/(dx^2);
+            G(n,nym) = 1/(dx^2);
+            G(n,nyp) = 1/(dx^2);
+            
+        end
+        
+        
+    end
+end
+%figure('name', 'Matrix')
+%spy(G)
+
+V= G\B';
+for p = 1:ny
+    for m = 1:nx
+        n = m+(p-1)*nx;
+        Vout(p,m) =V(n);
+    end
+end
+figure
+surf(Vout)
+xlim([1 80])
+xlabel('X')
+ylabel('Y')
+zlabel('V')
+view(0, 0)
+
+
+%% Part 1B
+% This section looks at the diffrence between the numarical and analytical
+% solution for the case where a voltage is applied across the sides of the
+% semiconductor and the top and bottom are held at zero. The plot below
+% shows the result for the numarical solution for the problem it can be
+% seen from this that the boundry conditions are clearly difined. This is
+% because the boundry voltages are well difined by the boundry conditions.
+% The code sagment below was used to generate the surface seen if the
+% figure below. 
+
+
+
+clear
+dx =1;
+dy=1;
+nx = 78;
+ny = 52;
+V = zeros(ny,nx);
+G = sparse(nx*ny,nx*ny);
+V0=1;
+BC= [1, 0, 1,0];
+B = zeros(1,nx*ny);
+for p = 1:size(B,2)
+    
+    if (p== 1)
+        if isnan(BC(1))
+            
+        else
+            B(p)=BC(1);
+        end
+    elseif (p == nx)
+        if isnan(BC(3))
+            
+        else
+            B(p)=BC(3);
+        end
+    elseif (p == (1+(ny-1)*nx))
+        if isnan(BC(1))
+            
+        else
+            B(p)=BC(1);
+        end
+    elseif(p == nx*ny)
+        if isnan(BC(3))
+            
+        else
+            B(p)=BC(3);
+        end
+    elseif(mod(p,nx)==0)
+        if isnan(BC(3))
+            
+        else
+            B(p)=BC(3);
+        end
+    elseif(mod(p-1,nx)==0)
+        if isnan(BC(1))
+            
+        else
+            B(p) = BC(1);
+        end
+    elseif(1<p&p<nx)
+        if isnan(BC(4))
+            
+        else
+            B(p) =BC(4);
+        end
+    elseif((1+(ny-1)*nx)<p&p<nx*ny)
+        if isnan(BC(2))
+            
+        else
+            B(p) =BC(2);
+        end
+    else
+        
+    end
+    
+end
+
+for p = 1:ny
+    for m = 1:nx
+        n = m+(p-1)*nx;
+        nxm = (m-1)+(p-1)*nx;
+        nxp = (m+1)+(p-1)*nx;
+        nym = (m)+(p-2)*nx;
+        nyp = m+(p)*nx;
+        nxm2 = (m-2)+(p-1)*nx;
+        nxp2=(m+2)+(p-1)*nx;
+        nym2 = (m)+(p-3)*nx;
+        nyp2 = m+(p+1)*nx;
+        nxp3 = (m+3)+(p-1)*nx;
+        nxm3 = (m-3)+(p-1)*nx;
+        
+        if (n == 1)
+            if (isnan(BC(1)))
+                G(n,n)=-3/(2*dy)+2/(dx^3);
+                G(n,nyp) =4/(2*dy);
+                G(n,nyp2) =1/(2*dy);
+                G(n,nxp)=-5/(dx^3);
+                G(n,nxp2) =4/(dx^3);
+                G(n,nxp3) =-1/(dx^3);
+            else
+                G(n,n)=1;
+                
+            end
+        elseif (n == nx)
+            if (isnan(BC(3)))
+                G(n,n)=3/(2*dx)+2/(dx^3);
+                G(n,nym) =-4/(2*dx);
+                G(n,nym2) =1/(2*dx);
+                G(n,nxm)=-5/(dx^3);
+                G(n,nxm2) =4/(dx^3);
+                G(n,nxm3) =-1/(dx^3);
+            else
+                G(n,n)=1;
+                
+            end
+        elseif(n == (1+(ny-1)*nx))
+            if (isnan(BC(1)))
+                G(n,n)=3/(2*dy)+2/(dx^3);
+                G(n,nyp) =-4/(2*dy);
+                G(n,nyp2) =1/(2*dy);
+                G(n,nxp)=-5/(dx^3);
+                G(n,nxp2) =4/(dx^3);
+                G(n,nxp3) =-1/(dx^3);
+            else
+                G(n,n)=1;
+                
+            end
+        elseif(n == nx*ny)
+            if (isnan(BC(3)))
+                G(n,n)=3/(2*dy)+2/(dx^3);
+                G(n,nyp) =-4/(2*dy);
+                G(n,nyp2) =1/(2*dy);
+                G(n,nxm)=-5/(dx^3);
+                G(n,nxm2) =4/(dx^3);
+                G(n,nxm3) =-1/(dx^3);
+            else
+                G(n,n)=1;
+                
+            end
+        elseif(mod(n,nx)==0)
+            if (isnan(BC(3)))
+                G(n,n)=2/(dx^3);
+                G(n,nym) =1/(2*dy);
+                G(n,nyp) =1/(2*dy);
+                G(n,nxm)=-5/(dx^3);
+                G(n,nxm2) =4/(dx^3);
+                G(n,nxm3) =-1/(dx^3);
+            else
+                G(n,n)=1;
+                
+            end
+        elseif(mod(n-1,nx)==0)
+            if (isnan(BC(1)))
+                G(n,n)=2/(dx^3);
+                G(n,nym) =1/(2*dy);
+                G(n,nyp) =1/(2*dy);
+                G(n,nxp)=-5/(dx^3);
+                G(n,nxp2) =4/(dx^3);
+                G(n,nxp3) =-1/(dx^3);
+            else
+                G(n,n)=1;
+                
+            end
+        elseif (1<n&n<nx)
+            if (isnan(BC(4)))
+                G(n,n)=-3/(2*dy)-2/(dx^2);
+                G(n,nyp) =4/(2*dy);
+                G(n,nyp2) =-1/(2*dy);
+                G(n,nxp) = 1/(dx^2);
+                G(n,nxm) = 1/(dx^2);
+            else
+                G(n,n)=1;
+                
+            end
+        elseif ((1+(ny-1)*nx)<n&n<nx*ny)
+            if (isnan(BC(2)))
+                G(n,n)=3/(2*dy)-2/(dx^2);
+                
+                G(n,nym)=-4/(2*dy);
+                G(n,nym2) =1/(2*dy);
+                G(n,nxp) = 1/(dx^2);
+                G(n,nxm) = 1/(dx^2);
+            else
+                G(n,n)=1;
+                
+            end
+        else
+            
+            G(n,n)=-4/(dx^2);
+            G(n,nxp) = 1/(dx^2);
+            G(n,nxm) = 1/(dx^2);
+            G(n,nym) = 1/(dx^2);
+            G(n,nyp) = 1/(dx^2);
+            
+        end
+        
+        
+    end
+end
+%figure('name', 'Matrix')
+%spy(G)
+
+V= G\B';
+for p = 1:ny
+    for m = 1:nx
+        n = m+(p-1)*nx;
+        Vout(p,m) =V(n);
+    end
+end
+figure
+surf(Vout)
+xlabel('X')
+ylabel('Y')
+zlabel('V')
+
+
+x = 0:1:nx-1;
+y = 0:1:(ny-1);
+[X,Y]= meshgrid(x,y);
+V2 = zeros (size(X));
+%% 
+% The plot below was generated using the fallowing code. It can bee seen from
+% the plot that the value of the voltage at the side of the semiconductor
+% does not converge to a sigular value. Instead it ocilates about the 
+% applied voltage. This is due to the finite approxamation of used to 
+% generate the solution. Incrasing the number of approxamations will result
+% in the boudries being more well difined.
+
+for u = 1:2:160
+    
+    A= ((cosh(u*pi.*(X-(nx-1)/2)./(ny-1)))./((cosh(u*pi*((nx-1)/2)/(ny-1)))));
+    C=sin((u*pi.*Y)./(ny-1));
+    V2 = V2+ (1/u)*A.*C;
+    
+    
+end
+V2 =V2*(4*1/pi);
+figure
+surf(X,Y,V2)
+xlabel('X')
+ylabel('Y')
+zlabel('V')
+%%
+% The plot below shows the diffrence between the numarical and analytical
+% solutions for the problem. From this figure it can be seen that the
+% largest diffrence appeirs at the corners of the semiconductors. This is
+% because the coners of the semiconductor require more approximations to
+% generate the correct answer.
+
+diff =V2-Vout;
+figure
+surf(diff)
+xlabel('X')
+ylabel('Y')
+zlabel('V')
+
+
+
+%% Part 2A
+% Using the fallowing code this section looks a the analysis of the current through 
+% a semiconductor composed of a conductive regiond with two nonconductive
+% blocks placed at the center of the semiconductor. To analyse the current
+% through the semiconductor a potential of one was applied across the
+% material.
+
+
+sig = 1;
+sigbox = 10e-2;
+
+
+box1pos= [29,20];
+box2pos= [29,ny];
+box1dim= [20,20];
+box2dim= [20,20];
+
+dx2 =1;
+dy2=1;
+nx2 = 78;
+ny2 = 52;
+V3 = zeros(ny,nx);
+G2= sparse(nx*ny,nx*ny);
+V02=1;
+BC2= [1, nan, 0,nan];
+B2 = zeros(1,nx*ny);
+cond = zeros (ny,nx);
+% sets up conduction map
+
+for p = 1:ny2
+    for m = 1:nx2
+        
+        if ((m >=box1pos(1)&m <=box1pos(1)+box1dim(1))&p <=box1pos(2)&p >=box1pos(2)-box1dim(2))|((m >=box2pos(1)&m <=box2pos(1)+box2dim(1))&p <=box2pos(2)&p >=box2pos(2)-box2dim(2))
+            cond(p,m) =sigbox; 
+        else
+           cond(p,m) =sig; 
+        end
+    end
+end
+
+
+
+for p = 1:size(B2,2)
+    
+    if (p== 1)
+        if isnan(BC2(1))
+            
+        else
+            B2(p)=BC2(1);
+        end
+    elseif (p == nx)
+        if isnan(BC2(3))
+            
+        else
+            B2(p)=BC2(3);
+        end
+    elseif (p == (1+(ny-1)*nx))
+        if isnan(BC2(1))
+            
+        else
+            B2(p)=BC2(1);
+        end
+    elseif(p == nx*ny)
+        if isnan(BC2(3))
+            
+        else
+            B2(p)=BC2(3);
+        end
+    elseif(mod(p,nx)==0)
+        if isnan(BC2(3))
+            
+        else
+            B2(p)=BC2(3);
+        end
+    elseif(mod(p-1,nx)==0)
+        if isnan(BC2(1))
+            
+        else
+            B2(p) = BC2(1);
+        end
+    elseif(1<p&p<nx)
+        if isnan(BC2(4))
+            
+        else
+            B2(p) =BC2(4);
+        end
+    elseif((1+(ny-1)*nx)<p&p<nx*ny)
+        if isnan(BC2(2))
+            
+        else
+            B2(p) =BC2(2);
+        end
+    else
+        
+    end
+    
+end
+
+for p = 1:ny2
+    for m = 1:nx2
+        n = m+(p-1)*nx2;
+        nxm = (m-1)+(p-1)*nx2;
+        nxp = (m+1)+(p-1)*nx2;
+        nym = (m)+(p-2)*nx2;
+        nyp = m+(p)*nx2;
+        nxm2 = (m-2)+(p-1)*nx2;
+        nxp2=(m+2)+(p-1)*nx2;
+        nym2 = (m)+(p-3)*nx2;
+        nyp2 = m+(p+1)*nx2;
+        nxp3 = (m+3)+(p-1)*nx2;
+        nxm3 = (m-3)+(p-1)*nx2;
+        
+        if m == 1
+            G2(n,:)=0;
+            G2(n,n)=1;
+            
+        elseif m==nx2
+            G2(n,:)=0;
+            G2(n,n)=1;
+            
+        elseif p ==1
+            
+            ryp = (cond(p,m)+cond(p+1,m))/2;
+            rxp = (cond(p,m)+cond(p,m+1))/2;
+            rxm = (cond(p,m)+cond(p,m-1))/2;
+            
+            G2(n,n) = -(ryp+rxp+rxm);
+            G2(n,nyp)= ryp;
+            G2(n,nxm)= rxm;
+            G2(n,nxp) = rxp;
+            
+        elseif p==ny2
+            rym = (cond(p,m)+cond(p-1,m))/2;
+            rxp = (cond(p,m)+cond(p,m+1))/2;
+            rxm = (cond(p,m)+cond(p,m-1))/2;
+            
+            G2(n,n) = -(rym+rxp+rxm);
+            G2(n,nym)= rym;
+            G2(n,nxm)= rxm;
+            G2(n,nxp) = rxp;
+        else
+            ryp = (cond(p,m)+cond(p+1,m))/2;
+            rym = (cond(p,m)+cond(p-1,m))/2;
+            rxp = (cond(p,m)+cond(p,m+1))/2;
+            rxm = (cond(p,m)+cond(p,m-1))/2;
+            
+            G2(n,n) = -(ryp+rym+rxp+rxm);
+            G2(n,nyp)= ryp;
+            G2(n,nym)= rym;
+            G2(n,nxm)= rxm;
+            G2(n,nxp) = rxp;
+        end
+        
+    end
+end
+%figure('name', 'Matrix')
+%spy(G2)
+
+V3 = G2\B2';
+Vout2 = zeros(ny, nx);
+for p = 1:ny
+    for m = 1:nx
+        n = m+(p-1)*nx;
+        Vout2(p,m) =V3(n);
+    end
+end
+%%
+% The plot below shows the conductivity map for the semiconductor. The
+% regionds of the map that are blue represent the regions that are inside
+% the low conductivity boxes.
+
+figure
+surf(cond)
+title('Sigma')
+xlabel('X')
+ylabel('Y')
+zlabel('conductance')
+%% 
+% The fallowing plot shows the voltage at each point of the mesh. From this plot it
+% can be seen that the voltage trys to remain linear through the bottleneck
+% but is distorted by the blocks. This is becaue there is a large voltage
+% drop across the high resistanc blocks that forces the current to flow
+% through the bottleneck causeing decrease in the voltage droped across
+% this regioned due to the conservation of energy.
+
+figure 
+title('Voltage')
+surf(Vout2)
+xlabel('X')
+ylabel('Y')
+zlabel('V')
+view(-45, -45)
+
+Ex= size (Vout2);
+Ey = size (Vout2);
+for p = 1:ny
+    for m = 1:nx
+        
+        if (m==1)
+            Ex(p,m) = Vout2(p,m+1)-Vout2(p,m); 
+        elseif m == nx
+             Ex(p,m) = Vout2(p,m)-Vout2(p,m-1); 
+        else 
+             Ex(p,m) = (Vout2(p,m+1)-Vout2(p,m-1))/2;
+            
+        end
+         if (p==1)
+            Ey(p,m) = Vout2(p+1,m)-Vout2(p,m); 
+        elseif p == ny
+             Ey(p,m) = Vout2(p,m)-Vout2(p-1,m); 
+        else 
+             Ey(p,m) = (Vout2(p+1,m)-Vout2(p-1,m))/2;
+            
+        end
+    end 
+end
+Ex = -Ex;
+Ey = -Ey;
+
+currentx = cond.*Ex;
+currenty = cond.*Ey;
+
+%% 
+% From the plot below it can be seen that the magnatude of the electric
+% feild increase in the high resistanc blocks. This corasponds to the large
+% voltage drop in these regionds seen above. 
+
+
+figure 
+title('Electric Feild')
+quiver(Ex, Ey);
+xlabel('X')
+ylabel('Y')
+
+%% 
+% As expected the fallowing plot shows an increas in current through the 
+% bottleneck that accounts for the decreas in current through the high resistance
+% blocks.
+
+figure 
+title('Current')
+quiver(currentx,currenty)
+xlabel('X')
+ylabel('Y')
+
+%% Part 2B
+% The code below looks at the effect that mesh size has on the total
+% current flowing through the simiconductor. To acompish this the mesh size
+% was incremented by the base mesh size to increase the reselution of the
+% plot. The step size of each grid was also divided by the number of
+% increments to maintain the scale of the semiconductor. From the plot
+% below it can be seen that as the step size decrease the current converges
+% to a value. This is becaue the accuracy of the simulation is dependent on
+% the step size. It is also important to note that the increasing the
+% step size increases the simulation time because the number of iterations
+% needed increases.
+
+
+for l =1 :5
+
+sig = 1;
+sigbox = 10e-2;
+
+
+
+
+dx2 =1/l;
+dy2=1/l;
+nx2 = 78*l;
+ny2 = 52*l;
+box1pos= [29*l,20*l];
+box2pos= [29*l,ny2];
+box1dim= [20*l,20*l];
+box2dim= [20*l,20*l];
+V3 = zeros(ny2,nx2);
+G2= sparse(nx2*ny2,nx2*ny2);
+V02=1;
+BC2= [1, nan, 0,nan];
+B2 = zeros(1,nx2*ny2);
+cond = zeros (ny2,nx2);
+% sets up conduction map
+
+for p = 1:ny2
+    for m = 1:nx2
+        
+        if ((m >=box1pos(1)&m <=box1pos(1)+box1dim(1))&p <=box1pos(2)&p >=box1pos(2)-box1dim(2))|((m >=box2pos(1)&m <=box2pos(1)+box2dim(1))&p <=box2pos(2)&p >=box2pos(2)-box2dim(2))
+            cond(p,m) =sigbox; 
+        else
+           cond(p,m) =sig; 
+        end
+    end
+end
+
+
+
+for p = 1:size(B2,2)
+    
+    if (p== 1)
+        if isnan(BC2(1))
+            
+        else
+            B2(p)=BC2(1);
+        end
+    elseif (p == nx2)
+        if isnan(BC2(3))
+            
+        else
+            B2(p)=BC2(3);
+        end
+    elseif (p == (1+(ny2-1)*nx2))
+        if isnan(BC2(1))
+            
+        else
+            B2(p)=BC2(1);
+        end
+    elseif(p == nx2*ny2)
+        if isnan(BC2(3))
+            
+        else
+            B2(p)=BC2(3);
+        end
+    elseif(mod(p,nx2)==0)
+        if isnan(BC2(3))
+            
+        else
+            B2(p)=BC2(3);
+        end
+    elseif(mod(p-1,nx2)==0)
+        if isnan(BC2(1))
+            
+        else
+            B2(p) = BC2(1);
+        end
+    elseif(1<p&p<nx2)
+        if isnan(BC2(4))
+            
+        else
+            B2(p) =BC2(4);
+        end
+    elseif((1+(ny2-1)*nx2)<p&p<nx2*ny2)
+        if isnan(BC2(2))
+            
+        else
+            B2(p) =BC2(2);
+        end
+    else
+        
+    end
+    
+end
+
+for p = 1:ny2
+    for m = 1:nx2
+        n = m+(p-1)*nx2;
+        nxm = (m-1)+(p-1)*nx2;
+        nxp = (m+1)+(p-1)*nx2;
+        nym = (m)+(p-2)*nx2;
+        nyp = m+(p)*nx2;
+        nxm2 = (m-2)+(p-1)*nx2;
+        nxp2=(m+2)+(p-1)*nx2;
+        nym2 = (m)+(p-3)*nx2;
+        nyp2 = m+(p+1)*nx2;
+        nxp3 = (m+3)+(p-1)*nx2;
+        nxm3 = (m-3)+(p-1)*nx2;
+        
+        if m == 1
+            G2(n,:)=0;
+            G2(n,n)=1;
+            
+        elseif m==nx2
+            G2(n,:)=0;
+            G2(n,n)=1;
+            
+        elseif p ==1
+            
+            ryp = (cond(p,m)+cond(p+1,m))/(2);
+            rxp = (cond(p,m)+cond(p,m+1))/(2);
+            rxm = (cond(p,m)+cond(p,m-1))/(2);
+            
+            G2(n,n) = -(ryp+rxp+rxm);
+            G2(n,nyp)= ryp;
+            G2(n,nxm)= rxm;
+            G2(n,nxp) = rxp;
+            
+        elseif p==ny2
+            rym = (cond(p,m)+cond(p-1,m))/(2);
+            rxp = (cond(p,m)+cond(p,m+1))/(2);
+            rxm = (cond(p,m)+cond(p,m-1))/(2);
+            
+            G2(n,n) = -(rym+rxp+rxm);
+            G2(n,nym)= rym;
+            G2(n,nxm)= rxm;
+            G2(n,nxp) = rxp;
+        else
+            ryp = (cond(p,m)+cond(p+1,m))/(2);
+            rym = (cond(p,m)+cond(p-1,m))/(2);
+            rxp = (cond(p,m)+cond(p,m+1))/(2);
+            rxm = (cond(p,m)+cond(p,m-1))/(2);
+            
+            G2(n,n) = -(ryp+rym+rxp+rxm);
+            G2(n,nyp)= ryp;
+            G2(n,nym)= rym;
+            G2(n,nxm)= rxm;
+            G2(n,nxp) = rxp;
+        end
+        
+    end
+end
+%figure('name', 'Matrix')
+%spy(G2)
+
+V3 = G2\B2';
+Vout2 = zeros(ny2, nx2);
+for p = 1:ny2
+    for m = 1:nx2
+        n = m+(p-1)*nx2;
+        Vout2(p,m) =V3(n);
+    end
+end
+
+% figure
+% surf(cond)
+% xlabel('X')
+% ylabel('Y')
+% zlabel('conductance')
+% figure 
+% surf(Vout2)
+% xlabel('X')
+% ylabel('Y')
+% zlabel('V')
+% view(-45, -45)
+
+Ex= zeros(size (Vout2));
+Ey = zeros(size (Vout2));
+for p = 1:ny2
+    for m = 1:nx2
+        
+        if (m==1)
+            Ex(p,m) = (Vout2(p,m+1)-Vout2(p,m))/dx2; 
+        elseif m == nx2
+             Ex(p,m) = (Vout2(p,m)-Vout2(p,m-1))/dx2; 
+        else 
+             Ex(p,m) = (Vout2(p,m+1)-Vout2(p,m-1))/(2*dx2);
+            
+        end
+         if (p==1)
+            Ey(p,m) = (Vout2(p+1,m)-Vout2(p,m))/dy2; 
+        elseif p == ny2
+             Ey(p,m) = (Vout2(p,m)-Vout2(p-1,m))/dy2; 
+        else 
+             Ey(p,m) = (Vout2(p+1,m)-Vout2(p-1,m))/(2*dy2);
+            
+        end
+    end 
+end
+Ex = -Ex;
+Ey = -Ey;
+
+currentx = cond.*Ex.*dx2;
+currenty = cond.*Ey.*dy2;
+
+
+
+% figure 
+% quiver(Ex, Ey);
+% xlabel('X')
+% ylabel('Y')
+% 
+%  
+% figure 
+% quiver(currentx,currenty)
+% xlabel('X')
+% ylabel('Y')
+    
+    current(l) = mean(sum(sqrt(currentx.^2+ currenty.^2)));
+end 
+figure 
+plot(linspace(1,5,5),current)
+xlabel('scale factor')
+ylabel('current')
+
+
+
+%% Part 2C
+% This section looks at the effect that the size of the gap or conversly the 
+% size of the blocks has on the current through the semiconductor. To
+% accomplish this the size of the blocks were itertavly increased and the total current through
+% was recoded and ploted. from the plot below it can be seen that the
+% current through the material decrease with the size of the high
+% resistance regions. The current becomes remains steady once the high resistance 
+% regionds meets this is because the currnet nolonger has a low recistance path to follow and is forced to moved throgh the high resistance region.
+
+
+for l =1 :30
+
+sig = 1;
+sigbox = 10e-2;
+
+
+box1pos= [29,9+l];
+box2pos= [29,ny];
+box1dim= [20,9+l];
+box2dim= [20,9+l];
+
+dx2 =1;
+dy2=1;
+nx2 = 78;
+ny2 = 52;
+V3 = zeros(ny,nx);
+G2= sparse(nx*ny,nx*ny);
+V02=1;
+BC2= [1, nan, 0,nan];
+B2 = zeros(1,nx*ny);
+cond = zeros (ny,nx);
+% sets up conduction map
+
+for p = 1:ny2
+    for m = 1:nx2
+        
+        if ((m >=box1pos(1)&m <=box1pos(1)+box1dim(1))&p <=box1pos(2)&p >=box1pos(2)-box1dim(2))|((m >=box2pos(1)&m <=box2pos(1)+box2dim(1))&p <=box2pos(2)&p >=box2pos(2)-box2dim(2))
+            cond(p,m) =sigbox; 
+        else
+           cond(p,m) =sig; 
+        end
+    end
+end
+
+
+
+for p = 1:size(B2,2)
+    
+    if (p== 1)
+        if isnan(BC2(1))
+            
+        else
+            B2(p)=BC2(1);
+        end
+    elseif (p == nx)
+        if isnan(BC2(3))
+            
+        else
+            B2(p)=BC2(3);
+        end
+    elseif (p == (1+(ny-1)*nx))
+        if isnan(BC2(1))
+            
+        else
+            B2(p)=BC2(1);
+        end
+    elseif(p == nx*ny)
+        if isnan(BC2(3))
+            
+        else
+            B2(p)=BC2(3);
+        end
+    elseif(mod(p,nx)==0)
+        if isnan(BC2(3))
+            
+        else
+            B2(p)=BC2(3);
+        end
+    elseif(mod(p-1,nx)==0)
+        if isnan(BC2(1))
+            
+        else
+            B2(p) = BC2(1);
+        end
+    elseif(1<p&p<nx)
+        if isnan(BC2(4))
+            
+        else
+            B2(p) =BC2(4);
+        end
+    elseif((1+(ny-1)*nx)<p&p<nx*ny)
+        if isnan(BC2(2))
+            
+        else
+            B2(p) =BC2(2);
+        end
+    else
+        
+    end
+    
+end
+
+for p = 1:ny2
+    for m = 1:nx2
+        n = m+(p-1)*nx2;
+        nxm = (m-1)+(p-1)*nx2;
+        nxp = (m+1)+(p-1)*nx2;
+        nym = (m)+(p-2)*nx2;
+        nyp = m+(p)*nx2;
+        nxm2 = (m-2)+(p-1)*nx2;
+        nxp2=(m+2)+(p-1)*nx2;
+        nym2 = (m)+(p-3)*nx2;
+        nyp2 = m+(p+1)*nx2;
+        nxp3 = (m+3)+(p-1)*nx2;
+        nxm3 = (m-3)+(p-1)*nx2;
+        
+        if m == 1
+            G2(n,:)=0;
+            G2(n,n)=1;
+            
+        elseif m==nx2
+            G2(n,:)=0;
+            G2(n,n)=1;
+            
+        elseif p ==1
+            
+            ryp = (cond(p,m)+cond(p+1,m))/2;
+            rxp = (cond(p,m)+cond(p,m+1))/2;
+            rxm = (cond(p,m)+cond(p,m-1))/2;
+            
+            G2(n,n) = -(ryp+rxp+rxm);
+            G2(n,nyp)= ryp;
+            G2(n,nxm)= rxm;
+            G2(n,nxp) = rxp;
+            
+        elseif p==ny2
+            rym = (cond(p,m)+cond(p-1,m))/2;
+            rxp = (cond(p,m)+cond(p,m+1))/2;
+            rxm = (cond(p,m)+cond(p,m-1))/2;
+            
+            G2(n,n) = -(rym+rxp+rxm);
+            G2(n,nym)= rym;
+            G2(n,nxm)= rxm;
+            G2(n,nxp) = rxp;
+        else
+            ryp = (cond(p,m)+cond(p+1,m))/2;
+            rym = (cond(p,m)+cond(p-1,m))/2;
+            rxp = (cond(p,m)+cond(p,m+1))/2;
+            rxm = (cond(p,m)+cond(p,m-1))/2;
+            
+            G2(n,n) = -(ryp+rym+rxp+rxm);
+            G2(n,nyp)= ryp;
+            G2(n,nym)= rym;
+            G2(n,nxm)= rxm;
+            G2(n,nxp) = rxp;
+        end
+        
+    end
+end
+%figure('name', 'Matrix')
+%spy(G2)
+
+V3 = G2\B2';
+Vout2 = zeros(ny, nx);
+for p = 1:ny
+    for m = 1:nx
+        n = m+(p-1)*nx;
+        Vout2(p,m) =V3(n);
+    end
+end
+
+% figure
+% surf(cond)
+% xlabel('X')
+% ylabel('Y')
+% zlabel('conductance')
+% figure 
+% surf(Vout2)
+% xlabel('X')
+% ylabel('Y')
+% zlabel('V')
+% view(-45, -45)
+
+Ex= size (Vout2);
+Ey = size (Vout2);
+for p = 1:ny
+    for m = 1:nx
+        
+        if (m==1)
+            Ex(p,m) = Vout2(p,m+1)-Vout2(p,m); 
+        elseif m == nx
+             Ex(p,m) = Vout2(p,m)-Vout2(p,m-1); 
+        else 
+             Ex(p,m) = (Vout2(p,m+1)-Vout2(p,m-1))/2;
+            
+        end
+         if (p==1)
+            Ey(p,m) = Vout2(p+1,m)-Vout2(p,m); 
+        elseif p == ny
+             Ey(p,m) = Vout2(p,m)-Vout2(p-1,m); 
+        else 
+             Ey(p,m) = (Vout2(p+1,m)-Vout2(p-1,m))/2;
+            
+        end
+    end 
+end
+Ex = -Ex;
+Ey = -Ey;
+
+currentx = cond.*Ex;
+currenty = cond.*Ey;
+
+
+
+% figure 
+% quiver(Ex, Ey);
+% xlabel('X')
+% ylabel('Y')
+% 
+%  
+% figure 
+% quiver(currentx,currenty)
+% xlabel('X')
+% ylabel('Y')
+    
+    current(l) = mean(sum(sqrt(currentx.^2+ currenty.^2)));
+end 
+figure 
+plot(linspace(10,40,30),current)
+xlabel('block size')
+ylabel('current')
+
+%% Part 2D
+% This secton looks at the current that flows throgh the material given a
+% change in conductivity of the blocks. To analyse this a variaty of
+% conductances where iterated through and the resulting currents were
+% stored. From the plot below it can be seen that the current through the
+% semiconductor increace as the conductance increases. It can also be seen
+% that the plot tails of as the "low resistance" material becomes more
+% resitive than the "high resistive material". This is because paralel
+% resistaces approch the value of the lowest resistive branch as the
+% resistance of other branches increase.
+
+
+t = [1e-10,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100];
+for l =1 :101
+
+sig = 1;
+sigbox = t(l)*10e-2;
+
+
+box1pos= [29,20];
+box2pos= [29,ny];
+box1dim= [20,20];
+box2dim= [20,20];
+
+dx2 =1;
+dy2=1;
+nx2 = 78;
+ny2 = 52;
+V3 = zeros(ny,nx);
+G2= sparse(nx*ny,nx*ny);
+V02=1;
+BC2= [1, nan, 0,nan];
+B2 = zeros(1,nx*ny);
+cond = zeros (ny,nx);
+% sets up conduction map
+
+for p = 1:ny2
+    for m = 1:nx2
+        
+        if ((m >=box1pos(1)&m <=box1pos(1)+box1dim(1))&p <=box1pos(2)&p >=box1pos(2)-box1dim(2))|((m >=box2pos(1)&m <=box2pos(1)+box2dim(1))&p <=box2pos(2)&p >=box2pos(2)-box2dim(2))
+            cond(p,m) =sigbox; 
+        else
+           cond(p,m) =sig; 
+        end
+    end
+end
+
+
+
+for p = 1:size(B2,2)
+    
+    if (p== 1)
+        if isnan(BC2(1))
+            
+        else
+            B2(p)=BC2(1);
+        end
+    elseif (p == nx)
+        if isnan(BC2(3))
+            
+        else
+            B2(p)=BC2(3);
+        end
+    elseif (p == (1+(ny-1)*nx))
+        if isnan(BC2(1))
+            
+        else
+            B2(p)=BC2(1);
+        end
+    elseif(p == nx*ny)
+        if isnan(BC2(3))
+            
+        else
+            B2(p)=BC2(3);
+        end
+    elseif(mod(p,nx)==0)
+        if isnan(BC2(3))
+            
+        else
+            B2(p)=BC2(3);
+        end
+    elseif(mod(p-1,nx)==0)
+        if isnan(BC2(1))
+            
+        else
+            B2(p) = BC2(1);
+        end
+    elseif(1<p&p<nx)
+        if isnan(BC2(4))
+            
+        else
+            B2(p) =BC2(4);
+        end
+    elseif((1+(ny-1)*nx)<p&p<nx*ny)
+        if isnan(BC2(2))
+            
+        else
+            B2(p) =BC2(2);
+        end
+    else
+        
+    end
+    
+end
+
+for p = 1:ny2
+    for m = 1:nx2
+        n = m+(p-1)*nx2;
+        nxm = (m-1)+(p-1)*nx2;
+        nxp = (m+1)+(p-1)*nx2;
+        nym = (m)+(p-2)*nx2;
+        nyp = m+(p)*nx2;
+        nxm2 = (m-2)+(p-1)*nx2;
+        nxp2=(m+2)+(p-1)*nx2;
+        nym2 = (m)+(p-3)*nx2;
+        nyp2 = m+(p+1)*nx2;
+        nxp3 = (m+3)+(p-1)*nx2;
+        nxm3 = (m-3)+(p-1)*nx2;
+        
+        if m == 1
+            G2(n,:)=0;
+            G2(n,n)=1;
+            
+        elseif m==nx2
+            G2(n,:)=0;
+            G2(n,n)=1;
+            
+        elseif p ==1
+            
+            ryp = (cond(p,m)+cond(p+1,m))/2;
+            rxp = (cond(p,m)+cond(p,m+1))/2;
+            rxm = (cond(p,m)+cond(p,m-1))/2;
+            
+            G2(n,n) = -(ryp+rxp+rxm);
+            G2(n,nyp)= ryp;
+            G2(n,nxm)= rxm;
+            G2(n,nxp) = rxp;
+            
+        elseif p==ny2
+            rym = (cond(p,m)+cond(p-1,m))/2;
+            rxp = (cond(p,m)+cond(p,m+1))/2;
+            rxm = (cond(p,m)+cond(p,m-1))/2;
+            
+            G2(n,n) = -(rym+rxp+rxm);
+            G2(n,nym)= rym;
+            G2(n,nxm)= rxm;
+            G2(n,nxp) = rxp;
+        else
+            ryp = (cond(p,m)+cond(p+1,m))/2;
+            rym = (cond(p,m)+cond(p-1,m))/2;
+            rxp = (cond(p,m)+cond(p,m+1))/2;
+            rxm = (cond(p,m)+cond(p,m-1))/2;
+            
+            G2(n,n) = -(ryp+rym+rxp+rxm);
+            G2(n,nyp)= ryp;
+            G2(n,nym)= rym;
+            G2(n,nxm)= rxm;
+            G2(n,nxp) = rxp;
+        end
+        
+    end
+end
+%figure('name', 'Matrix')
+%spy(G2)
+
+V3 = G2\B2';
+Vout2 = zeros(ny, nx);
+for p = 1:ny
+    for m = 1:nx
+        n = m+(p-1)*nx;
+        Vout2(p,m) =V3(n);
+    end
+end
+
+% figure
+% surf(cond)
+% xlabel('X')
+% ylabel('Y')
+% zlabel('conductance')
+% figure 
+% surf(Vout2)
+% xlabel('X')
+% ylabel('Y')
+% zlabel('V')
+% view(-45, -45)
+
+Ex= size (Vout2);
+Ey = size (Vout2);
+for p = 1:ny
+    for m = 1:nx
+        
+        if (m==1)
+            Ex(p,m) = Vout2(p,m+1)-Vout2(p,m); 
+        elseif m == nx
+             Ex(p,m) = Vout2(p,m)-Vout2(p,m-1); 
+        else 
+             Ex(p,m) = (Vout2(p,m+1)-Vout2(p,m-1))/2;
+            
+        end
+         if (p==1)
+            Ey(p,m) = Vout2(p+1,m)-Vout2(p,m); 
+        elseif p == ny
+             Ey(p,m) = Vout2(p,m)-Vout2(p-1,m); 
+        else 
+             Ey(p,m) = (Vout2(p+1,m)-Vout2(p-1,m))/2;
+            
+        end
+    end 
+end
+Ex = -Ex;
+Ey = -Ey;
+
+currentx = cond.*Ex;
+currenty = cond.*Ey;
+
+
+
+% figure 
+% quiver(Ex, Ey);
+% xlabel('X')
+% ylabel('Y')
+% 
+%  
+% figure 
+% quiver(currentx,currenty)
+% xlabel('X')
+% ylabel('Y')
+    
+    current(l) = mean(sum(sqrt(currentx.^2+ currenty.^2)));
+end 
+figure 
+plot(t*10e-2,current)
+xlabel('conductivity')
+ylabel('current')
+
+
+%% Conclution
+% In conclution in this assignment the current handeling ability of a
+% semiconductor was analysed using the finite diffrnce method. The efffect
+% of mesh size, bottleneck size and conductivity were also analysed. It was
+% found that the accuracy of the simulation is dependent on the mesh size.
+% It was also found that increaseing the size of the bottleneck decreases
+% the current where as an increase in their conductivity increases the
+% current.
+##### SOURCE END #####
+--></body></html>
